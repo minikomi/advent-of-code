@@ -6,12 +6,12 @@
 (def odd-squares
   (filter odd? squares))
 
-(defn straight-edge-numbers [idx]
+(defn straight-edge-numbers [layer-number]
   (last
    (map-indexed
     (fn [n v] (mapv #(+ v (* 2 n %)) (range 4)))
     (reduce #(conj % (+ %2 (last %))) [1]
-            (map #(inc (* 8 %)) (range idx))))))
+            (map #(inc (* 8 %)) (range layer-number))))))
 
 (defn get-layer [n]
   (int (Math/floor (/ (Math/ceil (Math/sqrt n)) 2))))
