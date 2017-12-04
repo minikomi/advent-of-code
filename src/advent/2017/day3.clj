@@ -15,7 +15,7 @@
             (map #(inc (* 8 %)) (range layer-number))))))
 
 (defn get-layer [n]
-  (int (Math/floor (/ (Math/ceil (Math/sqrt n)) 2))))
+  (int (/ (Math/ceil (Math/sqrt n)) 2)))
 
 (defn spiral-memory [n]
   (let [layer-number (get-layer n)
