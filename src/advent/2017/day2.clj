@@ -32,14 +32,13 @@
   (throw (Exception. (format "Couldn't find evenly divisible: %s\n" row))))
 
 (defn find-evenly-divisible [row]
-  (let [sorted (distinct (sort row))]
-    (loop [r sorted]
-      (if (empty? r) (throw-row-error row)
-          (or
-           (first
-            (filter #(and (zero? (mod % (first r)))
-                          [% (first r)])))
-           (recur (rest r)))))))
+  (loop [r (-> row sort distinct)]
+    (if (empty? r) (throw-row-error row)
+        (or
+         (first
+          (filter #(and (zero? (mod % (first r)))
+                        [% (first r)])))
+         (recur (rest r))))))
 
 (defn process-row-2 [row]
   (apply / (find-evenly-divisible row)))
