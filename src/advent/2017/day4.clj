@@ -8,5 +8,15 @@
        s/split-lines
        (mapv #(s/split % #"\s+"))))
 
-(count
- (filter #(= % (distinct %)) input))
+(defn has-anagrams? [row]
+  (when
+      (not=
+       (count (map sort row))
+       (count (distinct (map sort row))))
+    row))
+
+(comment
+  (count
+   (filter #(= (count %) (count (distinct %))) input))
+  (count
+   (filter #(not (has-anagrams? %)) input)))
