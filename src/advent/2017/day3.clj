@@ -4,24 +4,26 @@
   (map #(* % %) (range)))
 
 (def odd-squares
-  (filter odd? squares))
-
-(defn straight-edge-numbers [layer-number]
-  (last
-   (map-indexed
-    (fn [n v] (mapv #(+ v (* 2 n %)) (range 4)))
-    (reduce #(conj % (+ %2 (last %)))
-            [1]
-            (map #(inc (* 8 %)) (range layer-number))))))
+  ((filter odd? squares)))
 
 (defn get-layer [n]
   (int (/ (Math/ceil (Math/sqrt n)) 2)))
 
+(defn get-max-sq-for-layer [n]
+  (nth odd-squares n))
+
+(defn get-edge-sequence [layer-number]
+  (take
+   (- (nth odd-squares layer-number)
+      (nth odd-squares (dec layer-number)))
+   (cycle (concat (reverse (range 0 layer-number))
+                  (map inc (take layer-number (range)))))))
+
 (defn spiral-memory [n]
   (let [layer-number (get-layer n)
-        se (straight-edge-numbers layer-number)
-        closest-se (first (sort-by #(Math/abs (- % n)) se))]
-    (+ (Math/abs (- closest-se n))
+        last-max-sq (get-max-sq-for-layer (dec layer-number))
+        edge-sequence (get-edge-sequence layer-number)]
+    (+ (nth edge-sequence (- n last-max-sq 1))
        layer-number)))
 
 (def start-state
@@ -62,8 +64,6 @@
          (range 1 4)))
    idx))
 
-(defn get-max-sq-for-layer [n]
-  (int (Math/pow (dec (* (inc n) 2)) 2)))
 
 (defn step-state [{:keys [pos vs dir idx]}]
   (let [new-idx (inc idx)
