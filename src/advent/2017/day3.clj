@@ -78,7 +78,6 @@
         neighbours (get-neighbouring-vs new-pos vs)
         new-v (apply + neighbours)
         new-vs (assoc vs new-pos new-v)]
-    (when (vs new-pos) (throw (Exception. (str new-pos))))
     {:idx new-idx
      :pos new-pos
      :dir new-dir
