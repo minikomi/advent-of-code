@@ -10,7 +10,8 @@
   (last
    (map-indexed
     (fn [n v] (mapv #(+ v (* 2 n %)) (range 4)))
-    (reduce #(conj % (+ %2 (last %))) [1]
+    (reduce #(conj % (+ %2 (last %)))
+            [1]
             (map #(inc (* 8 %)) (range layer-number))))))
 
 (defn get-layer [n]
@@ -50,10 +51,8 @@
 
 (defn get-neighbouring-vs [pos vs]
   (for [mv [:up :down :left :right :ne :nw :sw :se]
-        :let [mvd (do-move pos mv)
-              v-maybe (get vs mvd)]
-        :when v-maybe]
-    v-maybe))
+        :let [mvd (do-move pos mv)]]
+    (get vs mvd 0)))
 
 (defn is-corner? [idx]
   (contains?
