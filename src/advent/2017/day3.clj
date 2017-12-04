@@ -58,7 +58,8 @@
   (contains?
    (set
     (map #(- (get-max-sq-for-layer (get-layer idx))
-             (* 2 (get-layer idx) %)) (range 1 4)))
+             (* 2 (get-layer idx) %))
+         (range 1 4)))
    idx))
 
 (defn get-max-sq-for-layer [n]
