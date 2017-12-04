@@ -85,6 +85,7 @@
      :vs new-vs}))
 
 (comment
+  (spiral-memory 347991)
   (loop [s start-state]
     (if (< 347991 (:last-v s)) (:last-v s)
         (recur (step-state s)))))
