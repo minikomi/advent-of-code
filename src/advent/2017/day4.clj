@@ -9,10 +9,9 @@
        (mapv #(s/split % #"\s+"))))
 
 (defn has-anagrams? [row]
-  (when
-      (not=
-       (count (map sort row))
-       (count (distinct (map sort row))))
+  (when (not=
+         (count (map sort row))
+         (count (distinct (map sort row))))
     row))
 
 (comment
