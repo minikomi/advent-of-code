@@ -38,7 +38,7 @@
     :left  :down
     :down  :right))
 
-(defn do-move [)[x y] dir]
+(defn do-move [[x y] dir]
 (case dir
   :right [(inc x)      y]
   :up    [     x  (dec y)]
