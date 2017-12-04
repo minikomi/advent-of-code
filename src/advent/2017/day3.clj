@@ -39,15 +39,15 @@
     :down  :right))
 
 (defn do-move [[x y] dir]
-(case dir
-  :right [(inc x)      y]
-  :up    [     x  (dec y)]
-  :left  [(dec x)      y]
-  :down  [     x  (inc y)]
-  :nw    [(dec x) (dec y)]
-  :ne    [(inc x) (dec y)]
-  :sw    [(dec x) (inc y)]
-  :se    [(inc x) (inc y)]))
+  (case dir
+    :right [(inc x)      y]
+    :up    [     x  (dec y)]
+    :left  [(dec x)      y]
+    :down  [     x  (inc y)]
+    :nw    [(dec x) (dec y)]
+    :ne    [(inc x) (dec y)]
+    :sw    [(dec x) (inc y)]
+    :se    [(inc x) (inc y)]))
 
 (defn get-neighbouring-vs [pos vs]
   (for [mv [:up :down :left :right :ne :nw :sw :se]
