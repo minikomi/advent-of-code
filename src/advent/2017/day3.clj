@@ -86,7 +86,6 @@
      :vs new-vs}))
 
 (comment
-  (defn solve [start-state]
-    (loop [s start-state]
-      (if (< 347991 (:last-v s)) (:last-v s)
-          (recur (step-state s))))))
+  (loop [s start-state]
+    (if (< 347991 (:last-v s)) (:last-v s)
+        (recur (step-state s)))))
