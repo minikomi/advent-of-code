@@ -16,8 +16,9 @@
   (take
    (- (nth odd-squares layer-number)
       (nth odd-squares (dec layer-number)))
-   (cycle (concat (reverse (range 0 layer-number))
-                  (map inc (take layer-number (range)))))))
+   (cycle
+    (concat (reverse (range 0 layer-number))
+            (map inc (take layer-number (range)))))))
 
 (defn spiral-memory [n]
   (let [layer-number (get-layer n)
