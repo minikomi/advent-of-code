@@ -24,7 +24,7 @@
           (recur (if (<= 3 v)
                    (update i idx dec)
                    (update i idx inc))
-                 (+ idx (get i idx))
+                 (+ idx v)
                  (inc c))))))
 
 
