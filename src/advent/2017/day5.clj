@@ -27,7 +27,6 @@
                  (+ idx v)
                  (inc c))))))
 
-
 (defn solve2-transient [input]
   (loop [i (transient input) idx 0 c 0]
     (if (or (> 0 idx)
@@ -40,6 +39,6 @@
                  (inc c))))))
 
 (comment (solve input)
-         (solve2 [0 3 0 1 -3])
+         (solve2-transient [0 3 0 1 -3])
          (solve2 input)
          (solve2-transient input))

@@ -28,17 +28,15 @@
                [7 5 3]
                [2 4 6 8]]))))
 
-(defn throw-row-error [row]
-  (throw (Exception. (format "Couldn't find evenly divisible: %s\n" row))))
-
 (defn find-evenly-divisible [row]
-  (loop [r (-> row sort distinct)]
-    (if (empty? r) (throw-row-error row)
-        (or
-         (first
-          (filter #(and (zero? (mod % (first r)))
-                        [% (first r)])))
-         (recur (rest r))))))
+  (let [r (-> row sort distinct)]
+    (first
+     (for [a r
+           b r
+           :when (and
+                  (not= a b)
+                  (zero? (rem a b)))]
+      [a b]))))
 
 (defn process-row-2 [row]
   (apply / (find-evenly-divisible row)))
