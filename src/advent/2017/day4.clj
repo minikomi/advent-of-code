@@ -9,13 +9,10 @@
        (mapv #(s/split % #"\s+"))))
 
 (defn has-anagrams? [row]
-  (when (not=
-         (count (map sort row))
-         (count (distinct (map sort row))))
-    row))
+  (apply distinct? (map frequencies row)))
 
 (comment
   (count
-   (filter #(= (count %) (count (distinct %))) input))
+   (filter #(apply distinct? %) input))
   (count
-   (filter #(not (has-anagrams? %)) input)))
+   (filter has-anagrams? input)))
