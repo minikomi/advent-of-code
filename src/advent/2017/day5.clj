@@ -2,6 +2,9 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as s]))
 
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* :warn-on-boxed)
+
 (def input
   (->> (io/resource "day5.txt")
        slurp
@@ -38,15 +41,16 @@
                  (+ idx v)
                  (inc c))))))
 
+
 (defn solve2-int-array [input]
-  (let [len (count input)
-        i (int-array input)]
-    (loop [idx 0 c 0]
+  (let [i (int-array input)
+        len (count i)]
+    (loop [idx (int 0) c (int 0)]
       (if (or (> 0 idx) (<= len idx)) c
           (let [v (aget i idx)]
-            (if (<= (int 3) v)
-              (aset-int i idx (dec v))
-              (aset-int i idx (inc v)))
+            (if (<= 3 v)
+              (aset i idx (dec v))
+              (aset i idx (inc v)))
             (recur (+ idx v)
                    (inc c)))))))
 
@@ -55,4 +59,5 @@
          (solve2 input)
          (solve2-transient input)
          (solve2-int-array int-arr-input)
+         (bork-int-arr input)
          )
