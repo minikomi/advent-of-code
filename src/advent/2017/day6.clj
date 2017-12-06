@@ -8,11 +8,11 @@
 
 (defn get-indexed-max [memory-state]
   (reduce
-   (fn indexed-max-reduce [current-max idx]
+   (fn indexed-max-reduce [[_ current-max :as indexed-max] idx]
      (let [v (get memory-state idx)]
-       (if (< (second current-max) v)
+       (if (< current-max v)
          [idx v]
-         current-max)))
+         indexed-max)))
    [nil -1]
    (range (count memory-state))))
 
