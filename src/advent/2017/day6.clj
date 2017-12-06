@@ -11,7 +11,7 @@
    (fn indexed-max-reduce [current-max idx]
      (let [v (get memory-state idx)]
        (if (< (second current-max) v)
-         [idx (get memory-state idx)]
+         [idx v]
          current-max)))
    [nil -1]
    (range (count memory-state))))
