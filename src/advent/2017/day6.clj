@@ -23,12 +23,13 @@
 
 (defn step [memory-state]
   (let [[max-idx max-val] (get-indexed-max memory-state)]
-    (reduce (fn memory-update [arr offset]
-              (update arr
-                      (mod (+ max-idx offset) (count memory-state))
-                      inc))
-            (assoc memory-state max-idx 0)
-            (range 1 (inc max-val)))))
+    (reduce
+     (fn memory-update [arr offset]
+       (update arr
+               (mod (+ max-idx offset) (count memory-state))
+               inc))
+     (assoc memory-state max-idx 0)
+     (range 1 (inc max-val)))))
 
 (defn solve [memory-state]
   (loop [current-memory memory-state seen {memory-state 0} cycles 0]
