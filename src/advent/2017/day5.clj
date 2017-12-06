@@ -59,5 +59,4 @@
          (solve2 input)
          (solve2-transient input)
          (solve2-int-array int-arr-input)
-         (bork-int-arr input)
          )
