@@ -7,14 +7,14 @@
   [0 2 7 0])
 
 (defn get-indexed-max [memory-state]
-  (loop [idx 0
-         current-max [nil -1]] ;; no values below 0
-    (if-let [v (get memory-state idx)]
-      (recur (inc idx)
-             (if (< (second current-max) v)
-               [idx v]
-               current-max))
-      current-max)))
+  (reduce
+   (fn indexed-max-reduce [current-max idx]
+     (let [v (get memory-state idx)]
+       (if (< (second current-max) v)
+         [idx (get memory-state idx)]
+         current-max)))
+   [nil -1]
+   (range (count memory-state))))
 
 (comment
   (get-indexed-max test-input) ;; [2 7]
@@ -23,8 +23,9 @@
 
 (defn step [memory-state]
   (let [[max-idx max-val] (get-indexed-max memory-state)]
-    (reduce (fn [arr offset]
-              (update arr (mod (+ max-idx offset) (count memory-state))
+    (reduce (fn memory-update [arr offset]
+              (update arr
+                      (mod (+ max-idx offset) (count memory-state))
                       inc))
             (assoc memory-state max-idx 0)
             (range 1 (inc max-val)))))
