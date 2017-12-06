@@ -32,15 +32,14 @@
      (range 1 (inc max-val)))))
 
 (defn solve [memory-state]
-  (loop [current-memory memory-state seen {memory-state 0} cycles 0]
-    (let [new-state (step current-memory)
-          new-cycle-count (inc cycles)]
+  (loop [current-memory memory-state
+         seen           {memory-state 0}]
+    (let [new-state (step current-memory)]
       (if (seen new-state)
-        {:cycle-count new-cycle-count
-         :loop-distance (- new-cycle-count (seen new-state))}
+        {:cycle-count   (count seen)
+         :loop-distance (- (count seen) (seen new-state))}
         (recur new-state
-               (assoc seen new-state new-cycle-count)
-               new-cycle-count)))))
+               (assoc seen new-state (count seen)))))))
 
 (comment (solve test-input))
 
