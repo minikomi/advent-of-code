@@ -56,7 +56,7 @@ cntj (57)")))
 (defn walk-tally [name-map root]
   (tree-seq
    #(:supporting %)
-   #(->> % :supporting
+   #(->> (:supporting %)
          (map name-map)
          (map (fn [p]
                 (assoc p
@@ -67,7 +67,6 @@ cntj (57)")))
                                    (walk-tally name-map (:name p))))))))
    (let [root-guy (name-map root)]
      (assoc root-guy :parent nil))))
-
 
 (defn solve2 [input]
   (let [head (solve1 input)
