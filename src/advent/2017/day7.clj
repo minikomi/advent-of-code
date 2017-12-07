@@ -42,12 +42,16 @@ cntj (57)")))
 (defn input->map [input]
   (into {} (map #(vector (:name %) %)) input))
 
+;; part 1
+
 (defn solve1 [input]
   (let [supporting (filter :supporting input)
         all-supported (set (mapcat :supporting supporting))]
     (first (filter #(not (all-supported %)) (map :name supporting)))))
 
 (comment (solve1 input))
+
+;; part 2
 
 (defn walk-tally [name-map root]
   (->> (get name-map root)
