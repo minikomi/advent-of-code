@@ -74,13 +74,15 @@ cntj (57)")))
                     supporting-weights)]
         (if (empty? wrong-weight)
           (let [tail-weight (tally-chain name-map h)
-                head-weight (-> (name-map h) :weight)]
+                head-weight (-> (name-map h) :weight)
+                adjusted-head-weight (+ head-weight
+                                        (- last-correct
+                                           tail-weight))]
             {:name h
              :head-weight head-weight
              :tail-weight tail-weight
              :correct-weight last-correct
-             :adjusted-head-weight (+ head-weight (- last-correct
-                                                     tail-weight))})
+             :adjusted-head-weight adjusted-head-weight})
           (recur (-> wrong-weight first second first first)
                  (-> correct-weight first first)))))))
 
