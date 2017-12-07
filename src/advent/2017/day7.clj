@@ -54,12 +54,10 @@ cntj (57)")))
 ;; part 2
 
 (defn walk-tally [name-map root]
-  (->> (get name-map root)
+  (->> (name-map root)
        (tree-seq
         #(:supporting %)
-        (fn [p]
-          (map #(get name-map %)
-               (:supporting p))))
+        #(->> % :supporting (map name-map)))
        (map :weight)
        (apply +)))
 
