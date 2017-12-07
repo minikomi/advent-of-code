@@ -80,14 +80,16 @@ cntj (57)")))
         (apply min-key
                #(-> % second first :tally)
                unbalanced-discs)
+        tally-grouped
+        (group-by :tally unbalanced-children)
         [correct-weight _]
         (apply max-key
                #(-> % second count)
-               (group-by :tally unbalanced-children))
+               tally-grouped)
         [incorrect-weight [unbalanced-node]]
         (apply min-key
                #(-> % second count)
-               (group-by :tally unbalanced-children))]
+               tally-grouped)]
     {:correct-weight correct-weight
      :incorrect-weight incorrect-weight
      :unbalanced-node (select-keys unbalanced-node [:name :weight])
