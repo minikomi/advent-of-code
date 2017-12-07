@@ -60,7 +60,7 @@ cntj (57)")))
 (defn solve2 [input]
   (let [head (solve1 input)
         name-map (input->map input)]
-    (loop [h head last-right nil]
+    (loop [h head last-correct nil]
       (let [supporting (-> (name-map h) :supporting)
             supporting-weights ;; {weight -> [[name  weight] ... ]}
             (group-by second
@@ -69,19 +69,19 @@ cntj (57)")))
             wrong-weight
             (filter #(= 1 (count (second %)))
                     supporting-weights)
-            right-weight
+            correct-weight
             (filter #(not= 1 (count (second %)))
                     supporting-weights)]
         (if (empty? wrong-weight)
-          (let [details {:name h
-                         :correct-weight last-right
-                         :tail-weight (tally-chain name-map h)
-                         :head-weight (-> (name-map h) :weight)}]
-            (assoc details :adjusted-weight
-                   (+ (:head-weight details)
-                      (- (:correct-weight details)
-                         (:tail-weight details)))))
+          (let [tail-weight (tally-chain name-map h)
+                head-weight (-> (name-map h) :weight)]
+            {:name h
+             :head-weight head-weight
+             :tail-weight tail-weight
+             :correct-weight last-correct
+             :adjusted-head-weight (+ head-weight (- last-correct
+                                                     tail-weight))})
           (recur (-> wrong-weight first second first first)
-                 (-> right-weight first first)))))))
+                 (-> correct-weight first first)))))))
 
 (comment (solve2 input))
