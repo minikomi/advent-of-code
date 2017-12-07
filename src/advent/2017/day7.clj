@@ -53,24 +53,24 @@ cntj (57)")))
 
 ;; part 2
 
-(defn walk-tally [name-map root]
+(defn walk-tally [name-map root-node]
   (tree-seq
    #(:supporting %)
-   #(->> (:supporting %)
-         (map name-map)
-         (map (fn [p]
-                (assoc p
-                       :parent (:name %)
-                       :tally
-                       (apply +
-                              (map :weight
-                                   (walk-tally name-map (:name p))))))))
-   (let [root-guy (name-map root)]
-     (assoc root-guy :parent nil))))
+   (fn [parent-node]
+     (->> (:supporting parent-node)
+          (map
+           (fn [node-name]
+             (let [node (name-map node-name)]
+               (assoc node
+                      :parent (:name parent-node)
+                      :tally (->> (walk-tally name-map node)
+                                  (map :weight)
+                                  (apply +))))))))
+   root-node))
 
 (defn solve2 [input]
-  (let [head (solve1 input)
-        name-map (input->map input)
+  (let [name-map (input->map input)
+        head (name-map (solve1 input))
         tallied (walk-tally name-map head)
         unbalanced-discs
         (->> tallied
