@@ -54,10 +54,10 @@ cntj (57)")))
 ;; part 2
 
 (defn walk-tally [name-map root]
-  (->> (name-map root)
-       (tree-seq
+  (->> (tree-seq
         #(:supporting %)
-        #(->> % :supporting (map name-map)))
+        #(->> % :supporting (map name-map))
+        (name-map root))
        (map :weight)
        (apply +)))
 
@@ -88,6 +88,6 @@ cntj (57)")))
              :correct-weight last-correct
              :adjusted-head-weight adjusted-head-weight})
           (recur (-> wrong-weight first second first first)
-                 (-> correct-weight first first)))))))
+                 (ffirst correct-weight)))))))
 
 (comment (solve2 input))
