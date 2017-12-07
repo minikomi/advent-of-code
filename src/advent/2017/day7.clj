@@ -1,6 +1,7 @@
 (ns advent.2017.day7
   (require [clojure.string :as s]
-           [clojure.java.io :as io]))
+           [clojure.java.io :as io]
+           [clojure.walk :as w]))
 
 (defn parse-weight [weight-str]
   (Integer/parseInt (clojure.string/replace weight-str #"[()]" "")))
@@ -48,14 +49,15 @@ cntj (57)")))
 
 (comment (solve1 input))
 
-(defn tally-chain [name-map name]
-  (loop [total 0 current-name name stack []]
-    (let [supporting (-> (name-map current-name) :supporting)
-          new-total (+ total (-> (name-map current-name) :weight))]
-      (if (and (empty? stack)
-               (nil? supporting)) new-total
-          (let [new-stack (into stack supporting)]
-            (recur new-total (peek new-stack) (pop new-stack)))))))
+(defn walk-tally [name-map root]
+  (->> (get name-map root)
+       (tree-seq
+        #(:supporting %)
+        (fn [p]
+          (map #(get name-map %)
+               (:supporting p))))
+       (map :weight)
+       (apply +)))
 
 (defn solve2 [input]
   (let [head (solve1 input)
@@ -64,7 +66,7 @@ cntj (57)")))
       (let [supporting (-> (name-map h) :supporting)
             supporting-weights ;; {weight -> [[name  weight] ... ]}
             (group-by second
-                      (map #(vector % (tally-chain name-map %))
+                      (map #(vector % (walk-tally name-map %))
                            supporting))
             wrong-weight
             (filter #(= 1 (count (second %)))
@@ -73,7 +75,7 @@ cntj (57)")))
             (filter #(not= 1 (count (second %)))
                     supporting-weights)]
         (if (empty? wrong-weight)
-          (let [tail-weight (tally-chain name-map h)
+          (let [tail-weight (walk-tally name-map h)
                 head-weight (-> (name-map h) :weight)
                 adjusted-head-weight (+ head-weight
                                         (- last-correct
