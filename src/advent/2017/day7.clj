@@ -73,11 +73,10 @@ cntj (57)")))
             (filter #(not= 1 (count (second %)))
                     supporting-weights)]
         (if (empty? wrong-weight)
-          (vector h
-                  (vector
-                   "correct:" last-right
-                   "tail weight:" (tally-chain name-map h)
-                   "head weight" (-> (name-map h) :weight)))
+          {:name h
+           :correct-weight last-right
+           :tail-weight (tally-chain name-map h)
+           :head-weight (-> (name-map h) :weight)}
           (recur (-> wrong-weight first second first first)
                  (-> right-weight first first)))))))
 
