@@ -35,6 +35,9 @@ cntj (57)")))
 (def input
   (map parse-line (s/split-lines (slurp (io/resource "day7.txt")))))
 
+(def input2
+  (map parse-line (s/split-lines (slurp (io/resource "day72.txt")))))
+
 (defn input->map [input]
   (into {} (map #(vector (:name %) %)) input))
 
@@ -57,10 +60,9 @@ cntj (57)")))
 (defn solve2 [input]
   (let [head (solve1 input)
         name-map (input->map input)]
-    (loop [h head last nil]
-      (println "head" h)
+    (loop [h head last-right nil]
       (let [supporting (-> (name-map h) :supporting)
-            supporting-weights
+            supporting-weights ;; {weight -> [[name  weight] ... ]}
             (group-by second
                       (map #(vector % (tally-chain name-map %))
                            supporting))
@@ -72,9 +74,10 @@ cntj (57)")))
                     supporting-weights)]
         (if (empty? wrong-weight)
           (vector h
-                  (+  (- last-right
-                         (tally-chain name-map h))
-                      (-> (name-map h) :weight)))
+                  (vector
+                   "correct:" last-right
+                   "tail weight:" (tally-chain name-map h)
+                   "head weight" (-> (name-map h) :weight)))
           (recur (-> wrong-weight first second first first)
                  (-> right-weight first first)))))))
 
