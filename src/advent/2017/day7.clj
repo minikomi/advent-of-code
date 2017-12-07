@@ -54,40 +54,44 @@ cntj (57)")))
 ;; part 2
 
 (defn walk-tally [name-map root]
-  (->> (tree-seq
-        #(:supporting %)
-        #(->> % :supporting (map name-map))
-        (name-map root))
-       (map :weight)
-       (apply +)))
+  (tree-seq
+   #(map :supporting %)
+   #(->> % :supporting
+         (map name-map)
+         (map (fn [p]
+                (assoc p
+                       :parent (:name %)
+                       :tally
+                       (apply +
+                              (map :weight
+                                   (walk-tally name-map (:name p))))))))
+   (let [root-guy (name-map root)]
+     (assoc root-guy :parent nil))))
+
 
 (defn solve2 [input]
   (let [head (solve1 input)
-        name-map (input->map input)]
-    (loop [h head last-correct nil]
-      (let [supporting (-> (name-map h) :supporting)
-            supporting-weights ;; {weight -> [[name  weight] ... ]}
-            (group-by second
-                      (map #(vector % (walk-tally name-map %))
-                           supporting))
-            wrong-weight
-            (filter #(= 1 (count (second %)))
-                    supporting-weights)
-            correct-weight
-            (filter #(not= 1 (count (second %)))
-                    supporting-weights)]
-        (if (empty? wrong-weight)
-          (let [tail-weight (walk-tally name-map h)
-                head-weight (-> (name-map h) :weight)
-                adjusted-head-weight (+ head-weight
-                                        (- last-correct
-                                           tail-weight))]
-            {:name h
-             :head-weight head-weight
-             :tail-weight tail-weight
-             :correct-weight last-correct
-             :adjusted-head-weight adjusted-head-weight})
-          (recur (-> wrong-weight first second first first)
-                 (ffirst correct-weight)))))))
-
-(comment (solve2 input))
+        name-map (input->map input)
+        tallied (walk-tally name-map head)
+        unbalanced-discs
+        (->> tallied
+             (group-by :parent)
+             (filter #(apply not= (map :tally (second %)))))
+        [unbalanced-parent unbalanced-children]
+        (apply min-key
+               #(-> % second first :tally)
+               unbalanced-discs)
+        [correct-weight _]
+        (apply max-key
+               #(-> % second count)
+               (group-by :tally unbalanced-children))
+        [incorrect-weight [unbalanced-node]]
+        (apply min-key
+               #(-> % second count)
+               (group-by :tally unbalanced-children))]
+    {:correct-weight correct-weight
+     :incorrect-weight incorrect-weight
+     :unbalanced-node (select-keys unbalanced-node [:name :weight])
+     :corrected-weight
+     (+ (:weight unbalanced-node)
+        (- correct-weight incorrect-weight))}))
