@@ -73,10 +73,14 @@ cntj (57)")))
             (filter #(not= 1 (count (second %)))
                     supporting-weights)]
         (if (empty? wrong-weight)
-          {:name h
-           :correct-weight last-right
-           :tail-weight (tally-chain name-map h)
-           :head-weight (-> (name-map h) :weight)}
+          (let [details {:name h
+                         :correct-weight last-right
+                         :tail-weight (tally-chain name-map h)
+                         :head-weight (-> (name-map h) :weight)}]
+            (assoc details :adjusted-weight
+                   (+ (:head-weight details)
+                      (- (:correct-weight details)
+                         (:tail-weight details)))))
           (recur (-> wrong-weight first second first first)
                  (-> right-weight first first)))))))
 
