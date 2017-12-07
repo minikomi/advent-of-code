@@ -62,10 +62,9 @@ cntj (57)")))
                 (assoc p
                        :parent (:name %)
                        :tally
-                       (or (:tally p)
-                        (apply +
-                               (map :weight
-                                    (walk-tally name-map (:name p)))))))))
+                       (apply +
+                              (map :weight
+                                   (walk-tally name-map (:name p))))))))
    (let [root-guy (name-map root)]
      (assoc root-guy :parent nil))))
 
