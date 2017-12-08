@@ -46,9 +46,6 @@ c inc -20 if c == 10")
               mod-value)
       registers)))
 
-(reduce step {} (parse-input test-input))
-
-
 (def input (parse-input (slurp (io/resource "day8.txt"))))
 
 (defn solve1 []
