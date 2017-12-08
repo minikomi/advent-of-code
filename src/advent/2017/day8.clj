@@ -54,6 +54,5 @@ c inc -20 if c == 10")
   (->>
    (parse-input input)
    (reductions step {})
-   (map vals)
-   (apply concat)
+   (mapcat vals)
    (apply max)))
