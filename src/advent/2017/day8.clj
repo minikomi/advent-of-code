@@ -40,13 +40,13 @@ c inc -20 if c == 10")
 (defn step [registers
             {:keys [cond-reg reg-loc instruction mod-value]
              :as   row}]
-  (let [reg-val (get registers cond-reg 0)]
-   (if (test-instruction row reg-val)
-     (update registers
-             reg-loc
-             (fnil ({"inc" + "dec" -} instruction) 0)
-             mod-value)
-     (assoc registers reg-loc reg-val))))
+  (let [primed-registers (update registers reg-loc (fnil identity 0))]
+    (if (test-instruction row (get primed-registers reg-loc))
+      (update primed-registers
+              reg-loc
+              ({"inc" + "dec" -} instruction)
+              mod-value)
+      primed-registers)))
 
 (def input (slurp (io/resource "day8.txt")))
 
