@@ -11,10 +11,9 @@ c dec -10 if a >= 1
 c inc -20 if c == 10")
 
 (defn parse-row [row]
-  (let-stop [
-             [instruction-full condition] (s/split row #" if ")
-             [reg-loc instruction value] (s/split instruction-full #"\ ")
-             [cond-reg cond-test cond-val] (s/split condition #"\ ")]
+  (let [[instruction-full condition] (s/split row #" if ")
+        [reg-loc instruction value] (s/split instruction-full #"\ ")
+        [cond-reg cond-test cond-val] (s/split condition #"\ ")]
     {:reg-loc reg-loc
      :instruction instruction
      :mod-value (read-string value)
@@ -37,7 +36,8 @@ c inc -20 if c == 10")
     (= reg-val cond-val)
     ((resolve (symbol cond-test)) reg-val cond-val)))
 
-(defn step [registers {:keys [cond-reg reg-loc instruction mod-value] :as row}]
+(defn step [registers {:keys [cond-reg reg-loc instruction mod-value]
+                       :as row}]
   (let [reg-val (get registers cond-reg 0)]
     (if (test-instruction row reg-val)
       (update registers
