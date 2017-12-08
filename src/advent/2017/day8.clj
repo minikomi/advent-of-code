@@ -26,8 +26,6 @@ c inc -20 if c == 10")
    parse-row
    (s/split-lines input)))
 
-(parse-input test-input)
-
 (defn test-instruction [{:keys [cond-test cond-val]} reg-val]
   (case cond-test
     "!="
