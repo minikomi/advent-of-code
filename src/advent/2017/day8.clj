@@ -25,10 +25,11 @@ c inc -20 if c == 10")
   (map parse-row (s/split-lines input)))
 
 (defn test-instruction [{:keys [cond-test cond-val]} reg-val]
-  (case cond-test
-    "!=" (not= reg-val cond-val)
-    "==" (= reg-val cond-val)
-    ((resolve (symbol cond-test)) reg-val cond-val)))
+  ((case cond-test
+     "!=" not=
+     "==" =
+     (resolve (symbol cond-test)))
+   reg-val cond-val))
 
 (defn step [registers {:keys [cond-reg reg-loc instruction mod-value]
                        :as   row}]
