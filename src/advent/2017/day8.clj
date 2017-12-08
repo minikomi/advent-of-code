@@ -10,6 +10,12 @@ a inc 1 if b < 5
 c dec -10 if a >= 1
 c inc -20 if c == 10")
 
+(def test-zero
+  "a inc 1 if b < 5")
+
+(def test-zero2
+  "a inc 1 if b > 5")
+
 (defn parse-row [row]
   (let [[instruction-full condition]  (s/split row #" if ")
         [reg-loc instruction value]   (s/split instruction-full #"\ ")
@@ -31,14 +37,16 @@ c inc -20 if c == 10")
      (resolve (symbol cond-test)))
    reg-val cond-val))
 
-(defn step [registers {:keys [cond-reg reg-loc instruction mod-value]
-                       :as   row}]
-  (if (test-instruction row (get registers cond-reg 0))
-    (update registers
-            reg-loc
-            (fnil ({"inc" + "dec" -} instruction) 0)
-            mod-value)
-    registers))
+(defn step [registers
+            {:keys [cond-reg reg-loc instruction mod-value]
+             :as   row}]
+  (let [reg-val (get registers cond-reg 0)]
+   (if (test-instruction row reg-val)
+     (update registers
+             reg-loc
+             (fnil ({"inc" + "dec" -} instruction) 0)
+             mod-value)
+     (assoc registers reg-loc reg-val))))
 
 (def input (slurp (io/resource "day8.txt")))
 
