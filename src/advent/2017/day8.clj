@@ -46,16 +46,17 @@ c inc -20 if c == 10")
               mod-value)
       registers)))
 
-(def input (parse-input (slurp (io/resource "day8.txt"))))
+(def input (slurp (io/resource "day8.txt")))
 
-(defn solve1 []
-  (->> input
+(defn solve1 [input]
+  (->> (parse-input input)
        (reduce step {})
        (apply max-key second)))
 
-(defn solve2 []
-  (->> input
-       (reductions step {})
-       (map vals)
-       (apply concat)
-       (apply max)))
+(defn solve2 [input]
+  (->>
+   (parse-input input)
+   (reductions step {})
+   (map vals)
+   (apply concat)
+   (apply max)))
