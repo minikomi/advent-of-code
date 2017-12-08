@@ -93,6 +93,45 @@ cntj (57)")))
     {:correct-weight correct-weight
      :incorrect-weight incorrect-weight
      :unbalanced-node (select-keys unbalanced-node [:name :weight])
-     :corrected-weight
+     :adujusted-head-weight
      (+ (:weight unbalanced-node)
         (- correct-weight incorrect-weight))}))
+
+;; recur based answer
+
+(defn tally-chain [name-map name]
+  (loop [total 0 current-name name stack []]
+    (let [supporting (-> (name-map current-name) :supporting)
+          new-total (+ total (-> (name-map current-name) :weight))]
+      (if (and (empty? stack)
+               (nil? supporting)) new-total
+          (let [new-stack (into stack supporting)]
+            (recur new-total (peek new-stack) (pop new-stack)))))))
+
+(defn solve2-loop [input]
+  (let [head (solve1 input)
+        name-map (input->map input)]
+    (loop [h head last-correct nil]
+      (let [supporting (-> (name-map h) :supporting)
+            supporting-weights ;; {weight -> [[name  weight] ... ]}
+            (group-by second
+                      (map #(vector % (tally-chain name-map %))
+                           supporting))
+            wrong-weight
+            (filter #(= 1 (count (second %)))
+                    supporting-weights)
+            correct-weight
+            (filter #(not= 1 (count (second %)))
+                    supporting-weights)]
+        (if (empty? wrong-weight)
+          (let [tail-weight (tally-chain name-map h)
+                head-weight (-> (name-map h) :weight)
+                adjusted-head-weight (+ head-weight
+                                        (- last-correct
+                                           tail-weight))]
+            {:unbalanced-node (name-map h)
+             :incorect-weight tail-weight
+             :correct-weight last-correct
+             :adjusted-head-weight adjusted-head-weight})
+          (recur (-> wrong-weight first second first first)
+                 (-> correct-weight first first)))))))
