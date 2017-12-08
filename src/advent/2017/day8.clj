@@ -59,5 +59,5 @@ c inc -20 if c == 10")
   (->>
    (parse-input input)
    (reductions step {})
-
-  ))
+   (mapcat vals)
+   (apply max)))
