@@ -41,7 +41,7 @@ c inc -20 if c == 10")
             {:keys [cond-reg reg-loc instruction mod-value]
              :as   row}]
   (let [primed-registers (update registers reg-loc (fnil identity 0))]
-    (if (test-instruction row (get primed-registers reg-loc))
+    (if (test-instruction row (get primed-registers cond-reg 0))
       (update primed-registers
               reg-loc
               ({"inc" + "dec" -} instruction)
@@ -59,5 +59,5 @@ c inc -20 if c == 10")
   (->>
    (parse-input input)
    (reductions step {})
-   (mapcat vals)
-   (apply max)))
+
+  ))
