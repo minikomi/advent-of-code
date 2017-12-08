@@ -9,7 +9,7 @@
           caught-symbols
           (->> stopped-bindings
                (partition 2)
-               (map #(vector (keyword (first %)) (first %)))
+               (map #(vector (str (first %)) (first %)))
                (into {}))]
       `(let ~stopped-bindings
          (throw (ex-info (str "Let was stopped at stage "
