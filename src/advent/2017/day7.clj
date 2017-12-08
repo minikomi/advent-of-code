@@ -39,6 +39,12 @@ cntj (57)")))
 (def input2
   (map parse-line (s/split-lines (slurp (io/resource "day72.txt")))))
 
+(def input-deep
+  (map parse-line (s/split-lines (slurp (io/resource "day7deep.txt")))))
+
+(def input-bork
+  (map parse-line (s/split-lines (slurp (io/resource "day7-bork.txt")))))
+
 (defn input->map [input]
   (into {} (map #(vector (:name %) %)) input))
 
