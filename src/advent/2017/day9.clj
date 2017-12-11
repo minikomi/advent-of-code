@@ -4,11 +4,11 @@
 (def input (slurp (io/resource "day9.txt")))
 
 (defn solve1 [input]
-  (loop [s (vec (reverse input))
-         lvl 0
+  (loop [s       (vec (reverse input))
+         lvl     0
          garbage false
-         gc 0
-         total 0]
+         gc      0
+         total   0]
     (if-let [c (peek s)]
       (if garbage
         (case c
@@ -16,12 +16,12 @@
           \! (recur (pop (pop s)) lvl garbage gc total)
           (recur (pop s) lvl true (inc gc) total))
         (case c
-          \{ (recur (pop s) (inc lvl) garbage gc total)
-          \} (recur (pop s) (dec lvl) garbage gc (+ total lvl))
-          \< (recur (pop s) lvl true gc total)
-          \, (recur (pop s) lvl garbage gc total)
+          \{       (recur (pop s) (inc lvl) garbage gc total)
+          \}       (recur (pop s) (dec lvl) garbage gc (+ total lvl))
+          \<       (recur (pop s) lvl true gc total)
+          \,       (recur (pop s) lvl garbage gc total)
           \newline (recur (pop s) lvl garbage gc total)
-          \! (recur (pop (pop s)) lvl garbage gc total)
+          \!       (recur (pop (pop s)) lvl garbage gc total)
           (throw (ex-info "weird state" {:s s :lvl lvl :total total}))))
       [garbage gc lvl total])))
 
