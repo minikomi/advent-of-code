@@ -4,29 +4,24 @@
 (def input (slurp (io/resource "day9.txt")))
 
 (defn solve1 [input]
-  (loop [s (vec (reverse input))
+  (loop [s     (vec (reverse input))
          state {:lvl     0
                 :garbage false
                 :gc      0
                 :total   0}]
     (if-let [c (peek s)]
-      (cond
-        (= \! c) ;; cancel works regardless of state
-        (recur (pop (pop s)) state)
-        (:garbage state)
+      (if (:garbage state)
         (case c
           \> (recur (pop s) (assoc state :garbage false))
+          \! (recur (pop (pop s)) state)
           (recur (pop s) (update state :gc inc)))
-        :else
         (case c
-          \{       (recur (pop s) (update state :lvl inc))
-          \}       (recur (pop s) (-> state
-                                      (update :lvl dec)
-                                      (update :total + (:lvl state))))
-          \<       (recur (pop s) (assoc state :garbage true))
-          \,       (recur (pop s) state)
-          \newline (recur (pop s) state)
-          (throw (ex-info "weird state" (assoc state :s s)))))
+          \{ (recur (pop s) (update state :lvl inc))
+          \} (recur (pop s) (-> state
+                                (update :lvl dec)
+                                (update :total + (:lvl state))))
+          \< (recur (pop s) (assoc state :garbage true))
+          (recur (pop s) state)))
       state)))
 
 (comment
