@@ -4,26 +4,30 @@
 (def input (slurp (io/resource "day9.txt")))
 
 (defn solve1 [input]
-  (loop [s       (vec (reverse input))
-         lvl     0
-         garbage false
-         gc      0
-         total   0]
+  (loop [s (vec (reverse input))
+         state {:lvl     0
+                :garbage false
+                :gc      0
+                :total   0}]
     (if-let [c (peek s)]
-      (if garbage
+      (cond
+        (= \! c) ;; cancel works regardless of state
+        (recur (pop (pop s)) state)
+        (:garbage state)
         (case c
-          \> (recur (pop s) lvl false gc total)
-          \! (recur (pop (pop s)) lvl garbage gc total)
-          (recur (pop s) lvl true (inc gc) total))
+          \> (recur (pop s) (assoc state :garbage false))
+          (recur (pop s) (update state :gc inc)))
+        :else
         (case c
-          \{       (recur (pop s) (inc lvl) garbage gc total)
-          \}       (recur (pop s) (dec lvl) garbage gc (+ total lvl))
-          \<       (recur (pop s) lvl true gc total)
-          \,       (recur (pop s) lvl garbage gc total)
-          \newline (recur (pop s) lvl garbage gc total)
-          \!       (recur (pop (pop s)) lvl garbage gc total)
-          (throw (ex-info "weird state" {:s s :lvl lvl :total total}))))
-      [garbage gc lvl total])))
+          \{       (recur (pop s) (update state :lvl inc))
+          \}       (recur (pop s) (-> state
+                                      (update :lvl dec)
+                                      (update :total + (:lvl state))))
+          \<       (recur (pop s) (assoc state :garbage true))
+          \,       (recur (pop s) state)
+          \newline (recur (pop s) state)
+          (throw (ex-info "weird state" (assoc state :s s)))))
+      state)))
 
 (comment
   (solve1 "{}")
