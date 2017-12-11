@@ -16,11 +16,7 @@
    })
 
 (defn step [state action]
-  (let [[x y z] (get-dir action)]
-    (-> state
-        (update 0 + x)
-        (update 1 + y)
-        (update 2 + z))))
+  (mapv + state (get-dir action)))
 
 (defn distance [[x y z]]
   (/ (+ (Math/abs x) (Math/abs y) (Math/abs z)) 2))
