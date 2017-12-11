@@ -19,8 +19,10 @@
   (mapv + state (get-dir action)))
 
 (defn distance [[x y z]]
-  (/ (+ (Math/abs x) (Math/abs y) (Math/abs z)) 2))
-
+  (/ (+ (Math/abs x)
+        (Math/abs y)
+        (Math/abs z))
+     2))
 
 (comment (distance (reduce step [0 0 0] ["ne" "ne" "ne"]))
 
