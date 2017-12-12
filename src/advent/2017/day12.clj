@@ -9,12 +9,12 @@
 
 (def test-input
   "0 <-> 2
-1 <-> 1
-2 <-> 0, 3, 4
-3 <-> 2, 4
-4 <-> 2, 3, 6
-5 <-> 6
-6 <-> 4, 5")
+  1 <-> 1
+  2 <-> 0, 3, 4
+  3 <-> 2, 4
+  4 <-> 2, 3, 6
+  5 <-> 6
+  6 <-> 4, 5")
 
 (defn parse-row [row]
   (let [[in-raw out-raw] (s/split (s/trim row) #" <-> ")]
@@ -24,8 +24,9 @@
 (defn solve1 [pipe-map start]
   (loop [acc #{} stack (get pipe-map start)]
     (if (empty? stack) acc
-        (let [joined (filter #(not (acc %))
-                             (get pipe-map (peek stack)))]
+        (let [joined (->> (peek stack)
+                          (pipe-map)
+                          (filter #(not (acc %))))]
           (recur (into acc joined)
                  (into (pop stack) joined))))))
 
