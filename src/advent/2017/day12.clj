@@ -29,7 +29,7 @@
     (if (empty? stack) acc
         (let [joined (->> (peek stack)
                           (pipe-map)
-                          (filter #(not (acc %))))]
+                          (remove acc))]
           (recur (into acc joined)
                  (into (pop stack) joined))))))
 
