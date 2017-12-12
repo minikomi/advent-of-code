@@ -41,7 +41,7 @@
            groups {}]
       (if (empty? remaining-programs) groups
           (let [start (first remaining-programs)
-                visited (solve1 pipe-map (first remaining-programs))]
+                visited (solve1 pipe-map start)]
             (recur (set/difference remaining-programs visited)
                    (assoc groups start visited)))))))
 
