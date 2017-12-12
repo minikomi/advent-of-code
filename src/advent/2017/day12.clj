@@ -21,6 +21,9 @@
     [(read-string in-raw)
      (read-string (str "[" out-raw "]"))]))
 
+(defn input->pipe-map [input]
+  (->> input s/split-lines (map parse-row) (into {})))
+
 (defn solve1 [pipe-map start]
   (loop [acc #{} stack (get pipe-map start)]
     (if (empty? stack) acc
@@ -30,8 +33,10 @@
           (recur (into acc joined)
                  (into (pop stack) joined))))))
 
+(comment (count (solve1 (input->pipe-map input-raw) 0)))
+
 (defn solve2 [input]
-  (let [pipe-map (->> input s/split-lines (map parse-row) (into {}))
+  (let [pipe-map (input->pipe-map input)
         all-programs (->> (vals pipe-map)
                           (reduce into (set (keys pipe-map))))]
     (loop [remaining-programs all-programs groups {}]
