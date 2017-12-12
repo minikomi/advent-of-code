@@ -26,12 +26,11 @@
 
 (defn solve1 [pipe-map start]
   (loop [acc #{} stack (get pipe-map start)]
-    (if (empty? stack) acc
-        (let [joined (->> (peek stack)
-                          (pipe-map)
-                          (remove acc))]
-          (recur (into acc joined)
-                 (into (pop stack) joined))))))
+    (if-let [p (peek stack)]
+      (let [joined (remove acc (pipe-map p))]
+        (recur (into acc joined)
+               (into (pop stack) joined)))
+      acc)))
 
 (comment (count (solve1 (input->pipe-map input-raw) 0)))
 
