@@ -32,7 +32,8 @@
 
 (defn solve2 [input]
   (let [pipe-map (->> input s/split-lines (map parse-row) (into {}))
-        all-programs (reduce into (set (keys pipe-map)) (vals pipe-map))]
+        all-programs (->> (vals pipe-map)
+                          (reduce into (set (keys pipe-map))))]
     (loop [remaining-programs all-programs groups {}]
       (if (empty? remaining-programs) groups
           (let [start (first remaining-programs)
