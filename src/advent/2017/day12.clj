@@ -1,7 +1,8 @@
 (ns advent.2017.day12
   (:require [clojure.java.io :as io]
             [clojure.string :as s]
-            [advent.util :as util]))
+            [advent.util :as util]
+            [clojure.set :as set]))
 
 (def input-raw
   (s/trim (slurp (io/resource "day12.txt"))))
@@ -20,11 +21,20 @@
     [(read-string in-raw)
      (read-string (str "[" out-raw "]"))]))
 
-(defn solve1 [input]
-  (let [pipe-map (->> input s/split-lines (map parse-row) (into {}))]
-    (loop [acc #{} stack (get pipe-map 0)]
-      (if (empty? stack) acc
-          (let [joined (filter #(not (acc %))
-                               (get pipe-map (peek stack)))]
-            (recur (into acc joined)
-                   (into (pop stack) joined)))))))
+(defn solve1 [pipe-map start]
+  (loop [acc #{} stack (get pipe-map start)]
+    (if (empty? stack) acc
+        (let [joined (filter #(not (acc %))
+                             (get pipe-map (peek stack)))]
+          (recur (into acc joined)
+                 (into (pop stack) joined))))))
+
+(defn solve2 [input]
+  (let [pipe-map (->> input s/split-lines (map parse-row) (into {}))
+        all-programs (reduce into (set (keys pipe-map)) (vals pipe-map))]
+    (loop [remaining-programs all-programs groups {}]
+      (if (empty? remaining-programs) groups
+          (let [start (first remaining-programs)
+                visited (solve1 pipe-map (first remaining-programs))]
+            (recur (set/difference remaining-programs visited)
+                   (assoc groups start visited)))))))
