@@ -45,3 +45,5 @@
                 visited (solve1 pipe-map (first remaining-programs))]
             (recur (set/difference remaining-programs visited)
                    (assoc groups start visited)))))))
+
+(comment (count (solve2 input-raw)))
