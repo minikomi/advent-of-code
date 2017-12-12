@@ -9,12 +9,12 @@
 
 (def test-input
   "0 <-> 2
-  1 <-> 1
-  2 <-> 0, 3, 4
-  3 <-> 2, 4
-  4 <-> 2, 3, 6
-  5 <-> 6
-  6 <-> 4, 5")
+1 <-> 1
+2 <-> 0, 3, 4
+3 <-> 2, 4
+4 <-> 2, 3, 6
+5 <-> 6
+6 <-> 4, 5")
 
 (defn parse-row [row]
   (let [[in-raw out-raw] (s/split (s/trim row) #" <-> ")]
@@ -36,10 +36,9 @@
 (comment (count (solve1 (input->pipe-map input-raw) 0)))
 
 (defn solve2 [input]
-  (let [pipe-map (input->pipe-map input)
-        all-programs (->> (vals pipe-map)
-                          (reduce into (set (keys pipe-map))))]
-    (loop [remaining-programs all-programs groups {}]
+  (let [pipe-map (input->pipe-map input)]
+    (loop [remaining-programs (set (keys pipe-map))
+           groups {}]
       (if (empty? remaining-programs) groups
           (let [start (first remaining-programs)
                 visited (solve1 pipe-map (first remaining-programs))]
