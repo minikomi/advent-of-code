@@ -25,23 +25,27 @@
   (->> input s/split-lines (map parse-row) (into {})))
 
 (defn solve1 [pipe-map start]
-  (loop [acc #{} stack (get pipe-map start)]
+  (loop [acc (transient #{})
+         stack (get pipe-map start)]
     (if-let [p (peek stack)]
       (let [joined (remove acc (pipe-map p))]
-        (recur (into acc joined)
+        (recur (reduce conj! acc joined)
                (into (pop stack) joined)))
-      acc)))
+      (persistent! acc))))
 
-(comment (count (solve1 (input->pipe-map input-raw) 0)))
+(comment
+  (count (solve1 (input->pipe-map >input-raw) 0))
+  )
 
-(defn solve2 [input]
-  (let [pipe-map (input->pipe-map input)]
-    (loop [remaining-programs (set (keys pipe-map))
-           groups {}]
-      (if (empty? remaining-programs) groups
-          (let [start (first remaining-programs)
-                visited (solve1 pipe-map start)]
-            (recur (set/difference remaining-programs visited)
-                   (assoc groups start visited)))))))
+(defn solve2 [pipe-map]
+  (loop [remaining-programs (set (keys pipe-map))
+         groups {}]
+    (if (empty? remaining-programs) groups
+        (let [start (first remaining-programs)
+              visited (solve1 pipe-map start)]
+          (recur (set/difference remaining-programs visited)
+                 (assoc groups start visited))))))
 
-(comment (count (solve2 input-raw)))
+(comment
+  (count (time (solve2 input-raw)))
+  )
