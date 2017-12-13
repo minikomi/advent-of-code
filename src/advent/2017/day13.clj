@@ -36,14 +36,13 @@
                                       (- (* scan-range 2) 2)))))]
       (* i scan-range))))
 
-(defn get-zero-states [parsed delay]
-  (filter
+(defn good-delay [parsed delay]
+  (not-any?
    (fn [[n v]]
-     (zero?
-      (rem (+ n delay) (- (* 2 v) 2)))) parsed))
+     (zero? (rem (+ n delay) (- (* 2 v) 2))))
+   parsed))
 
 (defn solve2 [input]
   (let [parsed (vec (parse-input input))]
-    (first
-     (remove #(first (get-zero-states parsed %))
-             (range)))))
+    (some #(when (good-delay parsed %) %)
+          (range))))
