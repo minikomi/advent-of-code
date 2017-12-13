@@ -10,8 +10,8 @@
 (def get-states
   (memoize
    (fn [scan-range]
-     (concat (range (dec scan-range))
-             (range (dec scan-range) 0 -1)))))
+     (into (vec (range (dec scan-range)))
+           (vec (range (dec scan-range) 0 -1))))))
 
 (def test-input
   "0: 3
@@ -27,15 +27,17 @@
 (parse-input test-input)
 
 (defn solve1 [parsed delay]
-  (->> (let [max-slot (apply max (mapv first parsed))]
-         (for [i (range (inc max-slot))
-               :let [scan-range (get parsed i)]
-               :when (and scan-range
-                          (zero? (nth (get-states scan-range)
-                                      (mod (+ i delay)
-                                           (- (* scan-range 2) 2)))))]
-           (* i scan-range)))))
+  (let [max-slot (apply max (mapv first parsed))]
+    (for [i (range (inc max-slot))
+          :let [scan-range (get parsed i)]
+          :when (and scan-range
+                     (zero? (nth (get-states scan-range)
+                                 (mod (+ i delay)
+                                      (- (* scan-range 2) 2)))))]
+      (do (println delay i)
+          (* i scan-range)))))
 
 (defn solve2 [input]
   (let [parsed (parse-input input)]
-    (count (take-while seq (map #(solve1 parsed %) (range))))))
+    (count (take-while identity
+                       (map #(first (solve1 parsed %)) (range))))))
