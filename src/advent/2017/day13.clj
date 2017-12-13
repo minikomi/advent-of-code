@@ -31,12 +31,19 @@
     (for [i (range (inc max-slot))
           :let [scan-range (get parsed i)]
           :when (and scan-range
-                     (zero? (nth (get-states scan-range)
+                     (zero? (get (get-states scan-range)
                                  (mod (+ i delay)
                                       (- (* scan-range 2) 2)))))]
       (* i scan-range))))
 
+(defn get-zero-states [parsed delay]
+  (filter
+   (fn [[n v]]
+     (zero?
+      (rem (+ n delay) (- (* 2 v) 2)))) parsed))
+
 (defn solve2 [input]
-  (let [parsed (parse-input input)]
-    (count (take-while identity
-                       (map #(first (solve1 parsed %)) (range))))))
+  (let [parsed (vec (parse-input input))]
+    (first
+     (remove #(first (get-zero-states parsed %))
+             (range)))))
