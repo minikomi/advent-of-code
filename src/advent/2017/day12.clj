@@ -34,7 +34,8 @@
       (persistent! acc))))
 
 (comment
-  (count (solve1 (input->pipe-map >input-raw) 0))
+  (count (solve1 (input->pipe-map test-input) 0))
+  (count (solve1 (input->pipe-map input-raw) 0))
   )
 
 (defn solve2 [pipe-map]
@@ -47,5 +48,6 @@
                  (assoc groups start visited))))))
 
 (comment
-  (count (time (solve2 input-raw)))
+  (time (count (solve2 (input->pipe-map test-input))))
+  (time (count (solve2 (input->pipe-map input-raw)))))
   )
