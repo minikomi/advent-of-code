@@ -34,8 +34,7 @@
                      (zero? (nth (get-states scan-range)
                                  (mod (+ i delay)
                                       (- (* scan-range 2) 2)))))]
-      (do (println delay i)
-          (* i scan-range)))))
+      (* i scan-range))))
 
 (defn solve2 [input]
   (let [parsed (parse-input input)]
