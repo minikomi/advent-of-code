@@ -31,10 +31,11 @@
 
 (defn check-neighbours [sq [x y]]
   (vec
-   (keep (fn [[x-mod y-mod]]
-           (let [new-pos [(+ x x-mod) (+ y y-mod)]]
-             (when (= \1 (get sq new-pos)) new-pos)))
-         [[-1 0] [1 0] [0 -1] [0 1]])))
+   (keep
+    (fn [[x-mod y-mod]]
+      (let [new-pos [(+ x x-mod) (+ y y-mod)]]
+        (when (= \1 (get sq new-pos)) new-pos)))
+    [[-1 0] [1 0] [0 -1] [0 1]])))
 
 (defn get-next-seed [sq]
   (ffirst
