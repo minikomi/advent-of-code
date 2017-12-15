@@ -39,7 +39,7 @@
 (defn good-delay [parsed delay]
   (not-any?
    (fn [[n v]]
-     (zero? (rem (+ n delay) (- (* 2 v) 2))))
+     (zero? (rem (+ n delay) (* 2 (dec v)))))
    parsed))
 
 (defn solve2 [input]
