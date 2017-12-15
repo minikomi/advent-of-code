@@ -2,8 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as s]
             [advent.2017.day10 :as day10]
-            [advent.util :as util]
-            [clojure.string :as str]))
+            [advent.util :as util]))
 
 (def input "nbysizxe")
 
@@ -34,8 +33,7 @@
   (vec
    (keep (fn [[x-mod y-mod]]
            (let [new-pos [(+ x x-mod) (+ y y-mod)]]
-             (when (#{\1}
-                    (get sq new-pos)) new-pos)))
+             (when (= \1 (get sq new-pos)) new-pos)))
          [[-1 0] [1 0] [0 -1] [0 1]])))
 
 (defn get-next-seed [sq]
@@ -70,4 +68,4 @@
   (solve1 test-str)
   (solve1 input)
   (flood-count (gen-square test-str))
-  (flood-count (gen-square input)))
+  (flood-count (gen-square input))i)
