@@ -7,11 +7,11 @@
 (def input [277 349])
 
 (defn gen-a [v]
-  (rem (* v 16807)
+  (rem (*' v 16807)
        2147483647))
 
 (defn gen-b [v]
-  (rem (* v 48271)
+  (rem (*' v 48271)
        2147483647))
 
 (def bottom-16-1 (dec (* 16 16 16 16)))
@@ -27,15 +27,15 @@
        count))
 
 (defn judge [n a b]
-  (let [as (drop 1 (iterate gen-a a))
-        bs (drop 1 (iterate gen-b b))]
+  (let [as (rest (iterate gen-a a))
+        bs (rest (iterate gen-b b))]
     (count-matches n as bs)))
 
 (defn judge2 [n a b]
   (let [as (filter #(zero? (rem % 4))
-                   (drop 1 (iterate gen-a a)))
+                   (rest (iterate gen-a a)))
         bs (filter #(zero? (rem % 8))
-                   (drop 1 (iterate gen-b b)))]
+                   (rest (iterate gen-b b)))]
     (count-matches n as bs)))
 
 (defn judgeloop [stop a b]
@@ -55,7 +55,7 @@
 
          (judge2 5000000 277 349)
 
-         (judge2 5000000 512 191)
+         (judge2 5000000 8 191)
 
          (judgeloop 40000000 512 191)
 
