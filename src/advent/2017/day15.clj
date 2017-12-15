@@ -38,7 +38,7 @@
     (count-matches n as bs)))
 
 (defn judgeloop [stop a b]
-  (loop [n 0 a a b b c 0]
+  (loop [n 0 a (gen-a a) b (gen-b b) c 0]
     (if (= n stop) c
         (let [n* (inc n)
               a* (gen-a a)
