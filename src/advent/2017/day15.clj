@@ -37,8 +37,8 @@
     (count-matches n as bs)))
 
 
-(take 10 (iterate gen-a 65))
+(comment (take 10 (iterate gen-a 65))
 
-(judge 40000000 65 8921)
+         (judge 40000000 65 8921)
 
-(judge2 5000000 277 349)
+         (judge2 5000000 277 349))
