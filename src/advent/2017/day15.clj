@@ -17,9 +17,11 @@
 (def bottom-16-1 (dec (* 16 16 16 16)))
 
 (defn match [a b]
-  (= bottom-16-1
-     (bit-and bottom-16-1
-              (bit-xor a (bit-not b)))))
+  (->> b
+       bit-not
+       (bit-xor a)
+       (bit-and bottom-16-1)
+       (= bottom-16-1)))
 
 (defn count-matches [n as bs]
   (->> (map match as bs)
@@ -38,9 +40,23 @@
         bs (filter #(zero? (rem % 8)) (iterate gen-b b))]
     (count-matches n as bs)))
 
+(defn judgeloop [stop a b]
+  (loop [n 0 a a b b c 0]
+    (if (= n stop) c
+        (let [n* (inc n)
+              a* (gen-a a)
+              b* (gen-b b)
+              c* (if (match a* b*) (inc c) c)]
+          (recur n* a* b* c*)
+          ))))
 
 (comment (take 10 (iterate gen-a 65))
 
          (judge 40000000 65 8921)
 
-         (judge2 5000000 277 349))
+         (judge2 5000000 277 349)
+
+         (judgeloop 40000000 65 8921)
+
+         (judgeloop 5000000 277 349)
+         )
