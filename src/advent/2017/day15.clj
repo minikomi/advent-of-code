@@ -17,11 +17,8 @@
 (def bottom-16-1 (dec (* 16 16 16 16)))
 
 (defn match [a b]
-  (->> b
-       bit-not
-       (bit-xor a)
-       (bit-and bottom-16-1)
-       (= bottom-16-1)))
+  (= (bit-and a bottom-16-1)
+     (bit-and b bottom-16-1)))
 
 (defn count-matches [n as bs]
   (->> (map match as bs)
