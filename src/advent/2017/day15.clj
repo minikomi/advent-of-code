@@ -22,7 +22,7 @@
               (bit-xor a (bit-not b)))))
 
 (defn count-matches [n as bs]
-  (count (filter identity (take n (map match as bs)))))
+  (count (filter identity (take n (drop 1 (map match as bs))))))
 
 (defn judge [n a b]
   (let [as (iterate gen-a a)
