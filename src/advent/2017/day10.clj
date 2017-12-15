@@ -24,7 +24,7 @@
 
 (def suffix [17 31 73 47 23])
 
-(defn knot [steps [state initial-offset initial-skip]]
+(defn single-knot [steps [state initial-offset initial-skip]]
   (util/let-stop [skip-steps (map vector steps
                                   (map #(+ initial-skip %)
                                        (range)))
@@ -37,24 +37,26 @@
      (+ initial-skip (count steps))]))
 
 (defn solve1 [input]
-  (let [[knotted head-offset _] (knot input [(vec (range 256)) 0 0])
+  (let [[knotted head-offset _] (single-knot input [(vec (range 256)) 0 0])
         reverted (rotate knotted (- head-offset))]
     (* (reverted 0) (reverted 1))))
 
-(defn solve2 [input]
+(defn knot [input]
   (util/let-stop [input-hex (into (mapv int (seq input))
                                   suffix)
                   [knotted head-offset _]
-                  (nth (iterate (partial knot input-hex)
+                  (nth (iterate (partial single-knot input-hex)
                                 [(vec (range 256)) 0 0]) 64)
-                  reverted (rotate knotted (- head-offset))
-                  xored (map #(apply bit-xor %)
-                             (partition 16 reverted))]
-    (apply str (map #(format "%02x" %) xored))))
+                  reverted (rotate knotted (- head-offset))]
+    (map #(apply bit-xor %)
+         (partition 16 reverted))))
+
+(defn hash-format [xored]
+  (apply str (map #(format "%02x" %) xored)))
 
 (comment
   (solve1 input)
-  (= "3efbe78a8d82f29979031a4aa0b16a9d" (solve2 "1,2,3"))
-  (= "63960835bcdc130f0b66d7ff4f6a5a8e" (solve2 "1,2,4"))
-  (println (solve2 input-raw))
+  (= "3efbe78a8d82f29979031a4aa0b16a9d" (hash-format (knot "1,2,3")))
+  (= "63960835bcdc130f0b66d7ff4f6a5a8e" (hash-format (knot "1,2,4")))
+  (println (knot input-raw))
   )
