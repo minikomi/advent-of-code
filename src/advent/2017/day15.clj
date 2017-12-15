@@ -22,19 +22,20 @@
 
 (defn count-matches [n as bs]
   (->> (map match as bs)
-       (drop 1)
        (take n)
        (filter identity)
        count))
 
 (defn judge [n a b]
-  (let [as (iterate gen-a a)
-        bs (iterate gen-b b)]
+  (let [as (drop 1 (iterate gen-a a))
+        bs (drop 1 (iterate gen-b b))]
     (count-matches n as bs)))
 
 (defn judge2 [n a b]
-  (let [as (filter #(zero? (rem % 4)) (iterate gen-a a))
-        bs (filter #(zero? (rem % 8)) (iterate gen-b b))]
+  (let [as (filter #(zero? (rem % 4))
+                   (drop 1 (iterate gen-a a)))
+        bs (filter #(zero? (rem % 8))
+                   (drop 1 (iterate gen-b b)))]
     (count-matches n as bs)))
 
 (defn judgeloop [stop a b]
@@ -50,10 +51,13 @@
 (comment (take 10 (iterate gen-a 65))
 
          (judge 40000000 65 8921)
+         (judge2 5000000 65 8921)
 
          (judge2 5000000 277 349)
 
-         (judgeloop 40000000 65 8921)
+         (judge2 5000000 512 191)
+
+         (judgeloop 40000000 512 191)
 
          (judgeloop 40000000 277 349)
          )
