@@ -19,9 +19,7 @@
     (get vs (inc (mod pos 2017)))))
 
 (defn solve2 [step times]
-  (loop [pos 0
-         after-zero nil
-         n 1]
+  (loop [pos 0 after-zero nil n 1]
     (if (> n times) after-zero
         (let [new-pos (inc (mod (+ pos step) n))]
           (recur
@@ -29,4 +27,5 @@
            (if (= 1 new-pos) n after-zero)
            (inc n))))))
 
-(solve2 301 50000000)
+(comment (solve1)
+         (solve2 301 50000000))
