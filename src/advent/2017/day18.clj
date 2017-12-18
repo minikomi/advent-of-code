@@ -192,6 +192,26 @@ rcv d")
                      {:state state
                       :inst inst}))))
 
+(defn do-rcv [insts total-state working cmd]
+  (if-let [p (first (get-in total-state [working :queue]))]
+    ;; still have items in queue
+    [(-> total-state
+         (assoc-in
+          [working :registers (:reg-a cmd)] p)
+         (update-in [working :pointer] inc)
+         (update-in [working :queue] subvec 1))
+     working]
+    ;; check state of other machine
+    (let [other (if (= working :a) :b :a)
+          o-ptr (get-in total-state [other :pointer])
+          o-que (get-in total-state [other :queue])
+          o-cmd (get insts o-ptr)]
+      (if (and (empty? o-que) (= (:cmd o-cmd) "rcv"))
+        ;; deadlock
+        false
+        ;; swap working process
+        [total-state other]))))
+
 (defn solve2 [input]
   (let [insts (vec (map parse-line (s/split-lines input)))]
     (loop [s initial-state2
@@ -199,24 +219,11 @@ rcv d")
       (let [w-ptr (get-in s [working :pointer])
             w-cmd (get insts w-ptr)]
         (case (:cmd w-cmd)
-          "rcv" (if-let [p (first (get-in s [working :queue]))]
-                  (do
-                   (recur (-> s
-                              (assoc-in
-                               [working :registers (:reg-a w-cmd)] p)
-                              (update-in [working :pointer] inc)
-                              (update-in [working :queue] subvec 1))
-                          working))
-                  (let [other (if (= working :a) :b :a)
-                        o-ptr (get-in s [other :pointer])
-                        o-que (get-in s [other :queue])
-                        o-cmd (get insts o-ptr)]
-                    (if (and (empty? o-que)
-                             (= (:cmd o-cmd) "rcv"))
-                      s
-                      (recur s other))))
+          "rcv" (if-let [[s* w*] (do-rcv insts s working w-cmd)]
+                  (recur s* w*)
+                  s)
           "snd" (recur (do-snd2 s working w-cmd) working)
           (recur (update s working step2 w-cmd)
                  working))))))
 
-(comment (solve2 input))
+(comment (clojure.pprint/pprint (solve2 input)))
