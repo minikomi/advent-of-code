@@ -50,10 +50,10 @@
     (do (println instruction)
         (throw (Exception. "unknown command")))))
 
-(def solve1 (memoize (fn [programs instructions]
-                       (reduce nibble
-                               programs
-                               instructions))))
+(defn solve1 [programs instructions]
+  (reduce nibble
+          programs
+          instructions))
 
 (defn solve2 [programs instructions]
   (let [[loop-size possible-states]
