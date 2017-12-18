@@ -73,7 +73,8 @@ jgz a -19")
 
 (defn do-set [{:keys [registers] :as state}
               {:keys [reg-a reg-b]}]
-  (inc-ptr (update state :registers
+  (inc-ptr
+   (update state :registers
            assoc
            reg-a
            (if (number? reg-b)
@@ -96,8 +97,7 @@ jgz a -19")
               (fnil * 0)
               (if (number? reg-b)
                 reg-b
-                (get registers reg-b 0)))
-   ))
+                (get registers reg-b 0)))))
 
 (defn do-mod [{:keys [registers] :as state}
               {:keys [reg-a reg-b]}]
@@ -110,7 +110,9 @@ jgz a -19")
 
 (defn do-jgz [{:keys [registers pointer] :as state}
               {:keys [reg-a reg-b]}]
-  (let [reg-val (get registers reg-a 0)]
+  (let [reg-val (if (number? reg-a)
+                  reg-a
+                  (get registers reg-a 0))]
     (if (pos? reg-val)
       (update state :pointer
               +
@@ -136,8 +138,89 @@ jgz a -19")
 (comment
   (do-add
    (do-set initial-state (parse-line "set a 1"))
-   (parse-line "add a 2"))
+   (parse-line "add a 2")))
+
+(defn solve1 [input]
   (let [insts (vec (map parse-line (s/split-lines input)))]
     (loop [s initial-state]
       (if (= "rcv" (:cmd (get insts (:pointer s)))) s
-          (recur (step s (get insts (:pointer s)))))))
+          (recur (step s (get insts (:pointer s))))))))
+
+(def initial-state2
+  {:a
+   {:registers {'p 0}
+    :pointer 0
+    :sent 0
+    :queue []}
+   :b
+   {:registers {'p 1}
+    :pointer 0
+    :sent 0
+    :queue []}})
+
+(def test-input2 "snd 1
+snd 2
+snd p
+rcv a
+rcv b
+rcv c
+rcv d")
+
+(defn do-snd2 [total-state working {:keys [reg-a]}]
+  (let [other-engine (if (= working :a) :b :a)]
+    (-> total-state
+        (update-in [other-engine :queue]
+                   conj
+                   (if (number? reg-a)
+                     reg-a
+                     (get-in total-state
+                             [working :registers reg-a]
+                             0)))
+        (update-in [working :pointer]
+                   inc)
+        (update-in [working :sent]
+                   inc))))
+
+(defn step2 [state inst]
+  (case (:cmd inst)
+    "set" (do-set state inst)
+    "add" (do-add state inst)
+    "mul" (do-mul state inst)
+    "mod" (do-mod state inst)
+    "jgz" (do-jgz state inst)
+    (throw  (ex-info "unknown command"
+                     {:state state
+                      :inst inst}))))
+
+(defn thread-debug [s]
+  (println s)
+  s)
+
+(defn solve2 [input]
+  (let [insts (vec (map parse-line (s/split-lines input)))]
+    (loop [s initial-state2
+           working :a]
+      (let [w-ptr (get-in s [working :pointer])
+            w-cmd (get insts w-ptr)]
+        (case (:cmd w-cmd)
+          "rcv" (if-let [p (first (get-in s [working :queue]))]
+                  (do
+                   (recur (-> s
+                              (assoc-in
+                               [working :registers (:reg-a w-cmd)] p)
+                              (update-in [working :pointer] inc)
+                              (update-in [working :queue] subvec 1))
+                          working))
+                  (let [other (if (= working :a) :b :a)
+                        o-ptr (get-in s [other :pointer])
+                        o-que (get-in s [other :queue])
+                        o-cmd (get insts o-ptr)]
+                    (if (and (empty? o-que)
+                             (= (:cmd o-cmd) "rcv"))
+                      s
+                      (recur s other))))
+          "snd" (recur (do-snd2 s working w-cmd) working)
+          (recur (update s working step2 w-cmd)
+                 working))))))
+
+(comment (solve2 input))
