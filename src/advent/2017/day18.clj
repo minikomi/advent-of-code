@@ -192,10 +192,6 @@ rcv d")
                      {:state state
                       :inst inst}))))
 
-(defn thread-debug [s]
-  (println s)
-  s)
-
 (defn solve2 [input]
   (let [insts (vec (map parse-line (s/split-lines input)))]
     (loop [s initial-state2
