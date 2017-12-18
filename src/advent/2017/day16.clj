@@ -69,12 +69,8 @@
          ffirst
          (apply str))))
 
-(nth (iterate #(reduce nibble % (vec (s/split input #",")))
-              (vec "abcdefghijklmnop"))
-     48)
-
 (comment
   (solve1 "abcde" "s1,x3/4,pe/b")
   (solve1 (vec "abcdefghijklmnop") (vec (s/split input #",")))
-  (solve2 (vec "abcdefghijklmnop") (vec (s/split input #","))) ;; 56
+  (solve2 (vec "abcdefghijklmnop") (vec (s/split input #",")))
   )
