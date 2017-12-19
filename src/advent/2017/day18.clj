@@ -154,12 +154,16 @@ rcv b
 rcv c
 rcv d")
 
+(defn get-other [working]
+  (if (= working :a) :b :a))
+
 (defn do-snd2 [total-state working {:keys [reg-a]}]
-  (let [other-engine (if (= working :a) :b :a)]
+  (let [other-engine (get-other working)
+        w-reg (get-in total-state [working :registers])]
     (-> total-state
         (update-in [other-engine :queue]
                    conj
-                   (reg-get (get-in total-state [working :registers]) reg-a))
+                   (reg-get w-reg reg-a))
         (update-in [working :pointer]
                    inc)
         (update-in [working :sent]
@@ -186,7 +190,7 @@ rcv d")
          (update-in [working :queue] pop))
      working]
     ;; check state of other machine
-    (let [other (if (= working :a) :b :a)
+    (let [other (get-other working)
           o-ptr (get-in total-state [other :pointer])
           o-que (get-in total-state [other :queue])
           o-cmd (get insts o-ptr)]
