@@ -1,4 +1,4 @@
-(ns advent.2017.day19
+q(ns advent.2017.day19
   (:require [clojure.java.io :as io]
             [clojure.string :as s]
             [advent.util :as util]))
@@ -38,9 +38,10 @@
 (defn make-pos-map [input-lines]
   (into {}
         (for [y (range (count input-lines))
-              x (range (count (first input-lines)))]
-          [[x y] (let [c (get-in input-lines [y x])]
-                   (when (not= \space c) c))])))
+              x (range (count (first input-lines)))
+              :let [c (get-in input-lines [y x])]
+              :when (not= \space c)]
+          [[x y] c])))
 
 (defn solve [input]
   (let [input-lines (vec (map vec (s/split-lines input)))
