@@ -131,17 +131,20 @@ jgz a -19")
       (if (= "rcv" (:cmd (get insts (:pointer s)))) s
           (recur (step s (get insts (:pointer s))))))))
 
+;; part 2
+;; -----------------------------------------------------
+
 (def initial-state2
   {:a
    {:registers {'p 0}
     :pointer 0
     :sent 0
-    :queue []}
+    :queue (clojure.lang.PersistentQueue/EMPTY)}
    :b
    {:registers {'p 1}
     :pointer 0
     :sent 0
-    :queue []}})
+    :queue (clojure.lang.PersistentQueue/EMPTY)}})
 
 (def test-input2 "snd 1
 snd 2
@@ -156,11 +159,7 @@ rcv d")
     (-> total-state
         (update-in [other-engine :queue]
                    conj
-                   (if (number? reg-a)
-                     reg-a
-                     (get-in total-state
-                             [working :registers reg-a]
-                             0)))
+                   (reg-get (get-in total-state [working :registers]) reg-a))
         (update-in [working :pointer]
                    inc)
         (update-in [working :sent]
@@ -184,7 +183,7 @@ rcv d")
          (assoc-in
           [working :registers (:reg-a cmd)] p)
          (update-in [working :pointer] inc)
-         (update-in [working :queue] subvec 1))
+         (update-in [working :queue] pop))
      working]
     ;; check state of other machine
     (let [other (if (= working :a) :b :a)
