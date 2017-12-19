@@ -6,6 +6,9 @@ q(ns advent.2017.day19
 (def input-raw
   (slurp (io/resource "day19.txt")))
 
+(def test-input
+  (slurp (io/resource "day19test.txt")))
+
 (def dirs
   {:up [0 -1]
    :down [0 1]
@@ -22,9 +25,6 @@ q(ns advent.2017.day19
     [:up :down]
     [:left :right]
     [:right :left]})
-
-(def test-input
-  (slurp (io/resource "day19test.txt")))
 
 (defn get-char-neighbour [m pos dir]
   (first
