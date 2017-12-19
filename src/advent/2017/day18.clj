@@ -71,6 +71,9 @@ jgz a -19")
   (if (number? r) r
       (get registers r 0)))
 
+;; commands
+;; -----------------------------------------------------
+
 (defn do-snd [{:keys [registers] :as state}
               {:keys [reg-a]}]
   (inc-ptr (assoc state :last (get registers reg-a 0))))
@@ -122,6 +125,9 @@ jgz a -19")
     (throw  (ex-info "unknown command"
                      {:state state
                       :inst inst}))))
+
+;; part 1
+;; -----------------------------------------------------
 
 (def initial-state {:registers {} :pointer 0})
 
