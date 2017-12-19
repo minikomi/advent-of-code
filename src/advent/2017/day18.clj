@@ -134,17 +134,19 @@ jgz a -19")
 ;; part 2
 ;; -----------------------------------------------------
 
-(def initial-state2
-  {:a
-   {:registers {'p 0}
-    :pointer 0
-    :sent 0
-    :queue (clojure.lang.PersistentQueue/EMPTY)}
-   :b
-   {:registers {'p 1}
-    :pointer 0
-    :sent 0
-    :queue (clojure.lang.PersistentQueue/EMPTY)}})
+(def initial-state-a
+  {:registers {'p 0}
+   :program-name 1
+   :pointer 0
+   :sent 0
+   :queue (clojure.lang.PersistentQueue/EMPTY)})
+
+(def initial-state-b
+  {:registers {'p 1}
+   :program-name 2
+   :pointer 0
+   :sent 0
+   :queue (clojure.lang.PersistentQueue/EMPTY)})
 
 (def test-input2 "snd 1
 snd 2
@@ -154,64 +156,42 @@ rcv b
 rcv c
 rcv d")
 
-(defn get-other [working]
-  (if (= working :a) :b :a))
+(defn do-snd2 [{:keys [registers] :as working} other {:keys [reg-a]}]
+  [(-> working
+       (update :sent inc)
+       (update :pointer inc))
+   (update other :queue
+           conj
+           (reg-get registers reg-a))])
 
-(defn do-snd2 [total-state working {:keys [reg-a]}]
-  (let [other-engine (get-other working)
-        w-reg (get-in total-state [working :registers])]
-    (-> total-state
-        (update-in [other-engine :queue]
-                   conj
-                   (reg-get w-reg reg-a))
-        (update-in [working :pointer]
-                   inc)
-        (update-in [working :sent]
-                   inc))))
-
-(defn step2 [state inst]
-  (case (:cmd inst)
-    "set" (do-set state inst)
-    "add" (do-add state inst)
-    "mul" (do-mul state inst)
-    "mod" (do-mod state inst)
-    "jgz" (do-jgz state inst)
-    (throw  (ex-info "unknown command"
-                     {:state state
-                      :inst inst}))))
-
-(defn do-rcv [insts total-state working cmd]
-  (if-let [p (first (get-in total-state [working :queue]))]
+(defn do-rcv [insts working other cmd]
+  (if-let [p (peek (:queue working))]
     ;; still have items in queue
-    [(-> total-state
-         (assoc-in
-          [working :registers (:reg-a cmd)] p)
-         (update-in [working :pointer] inc)
-         (update-in [working :queue] pop))
-     working]
+    [(-> working
+         (assoc-in [:registers (:reg-a cmd)] p)
+         (update :pointer inc)
+         (update :queue pop))
+     other]
     ;; check state of other machine
-    (let [other (get-other working)
-          o-ptr (get-in total-state [other :pointer])
-          o-que (get-in total-state [other :queue])
-          o-cmd (get insts o-ptr)]
-      (if (and (empty? o-que) (= (:cmd o-cmd) "rcv"))
+    (let [o-cmd (get insts (:pointer other))]
+      (if (and (empty? (:queue other))
+               (= (:cmd o-cmd) "rcv"))
         ;; deadlock
         false
         ;; swap working process
-        [total-state other]))))
+        [other working]))))
 
 (defn solve2 [input]
   (let [insts (vec (map parse-line (s/split-lines input)))]
-    (loop [s initial-state2
-           working :a]
-      (let [w-ptr (get-in s [working :pointer])
-            w-cmd (get insts w-ptr)]
+    (loop [working initial-state-a
+           other   initial-state-b]
+      (let [w-cmd (get insts (:pointer working))]
         (case (:cmd w-cmd)
-          "rcv" (if-let [[s* w*] (do-rcv insts s working w-cmd)]
-                  (recur s* w*)
-                  s)
-          "snd" (recur (do-snd2 s working w-cmd) working)
-          (recur (update s working step2 w-cmd)
-                 working))))))
+          "rcv" (if-let [[*w *o] (do-rcv insts working other w-cmd)]
+                  (recur *w *o)
+                  [working other])
+          "snd" (let [[w* o*] (do-snd2 working other w-cmd)]
+                  (recur w* o*))
+          (recur (step working w-cmd) other))))))
 
 (comment (clojure.pprint/pprint (solve2 input)))
