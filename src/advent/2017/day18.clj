@@ -67,6 +67,10 @@ jgz a -19")
 (defn inc-ptr [state]
   (update state :pointer inc))
 
+(defn reg-get [registers r]
+  (if (number? r) r
+      (get registers r 0)))
+
 (defn do-snd [{:keys [registers] :as state}
               {:keys [reg-a]}]
   (inc-ptr (assoc state :last (get registers reg-a 0))))
@@ -77,48 +81,34 @@ jgz a -19")
    (update state :registers
            assoc
            reg-a
-           (if (number? reg-b)
-             reg-b
-             (get registers reg-b 0)))))
+           (reg-get registers reg-b))))
 
 (defn do-add [{:keys [registers] :as state}
               {:keys [reg-a reg-b]}]
   (inc-ptr
    (update-in state [:registers reg-a]
               (fnil + 0)
-              (if (number? reg-b)
-                reg-b
-                (get registers reg-b 0)))))
+              (reg-get registers reg-b))))
 
 (defn do-mul [{:keys [registers] :as state}
               {:keys [reg-a reg-b]}]
   (inc-ptr
    (update-in state [:registers reg-a]
               (fnil * 0)
-              (if (number? reg-b)
-                reg-b
-                (get registers reg-b 0)))))
+              (reg-get registers reg-b))))
 
 (defn do-mod [{:keys [registers] :as state}
               {:keys [reg-a reg-b]}]
   (inc-ptr
    (update-in state [:registers reg-a]
               (fnil mod 0)
-              (if (number? reg-b)
-                reg-b
-                (get registers reg-b 0)))))
+              (reg-get registers reg-b))))
 
 (defn do-jgz [{:keys [registers pointer] :as state}
               {:keys [reg-a reg-b]}]
-  (let [reg-val (if (number? reg-a)
-                  reg-a
-                  (get registers reg-a 0))]
+  (let [reg-val (reg-get registers reg-a)]
     (if (pos? reg-val)
-      (update state :pointer
-              +
-              (if (number? reg-b)
-                reg-b
-                (get registers reg-b 0)))
+      (update state :pointer + (reg-get registers reg-b))
       (inc-ptr state))))
 
 (defn step [state inst]
@@ -134,11 +124,6 @@ jgz a -19")
                       :inst inst}))))
 
 (def initial-state {:registers {} :pointer 0})
-
-(comment
-  (do-add
-   (do-set initial-state (parse-line "set a 1"))
-   (parse-line "add a 2")))
 
 (defn solve1 [input]
   (let [insts (vec (map parse-line (s/split-lines input)))]
