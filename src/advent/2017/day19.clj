@@ -10,10 +10,10 @@ q(ns advent.2017.day19
   (slurp (io/resource "day19test.txt")))
 
 (def dirs
-  {:up [0 -1]
-   :down [0 1]
+  {:up    [0 -1]
+   :down  [0 1]
    :right [1 0]
-   :left [-1 0]})
+   :left  [-1 0]})
 
 (defn move [[x y] dir]
   (let [[dx dy] (dirs dir)]
@@ -21,10 +21,10 @@ q(ns advent.2017.day19
      (+ y dy)]))
 
 (def opposites
-  #{[:down :up]
-    [:up :down]
-    [:left :right]
-    [:right :left]})
+  #{[ :down :up   ]
+    [   :up :down ]
+    [ :left :right]
+    [:right :left ]})
 
 (defn get-char-neighbour [m pos dir]
   (first
