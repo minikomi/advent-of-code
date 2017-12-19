@@ -1,4 +1,4 @@
-q(ns advent.2017.day19
+(ns advent.2017.day19
   (:require [clojure.java.io :as io]
             [clojure.string :as s]
             [advent.util :as util]))
@@ -26,7 +26,7 @@ q(ns advent.2017.day19
     [ :left :right]
     [:right :left ]})
 
-(defn get-char-neighbour [m pos dir]
+(defn get-new-direction [m pos dir]
   (first
    (for [[d _] dirs
          :let [new-pos (move pos d)]
@@ -56,7 +56,7 @@ q(ns advent.2017.day19
         (if next-char
           (recur new-pos
                  (if (= \+ next-char)
-                   (get-char-neighbour m pos dir)
+                   (get-new-direction m pos dir)
                    dir)
                  (if (Character/isLetter next-char)
                    (conj seen next-char)
