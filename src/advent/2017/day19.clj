@@ -20,18 +20,18 @@
     [(+ x dx)
      (+ y dy)]))
 
-(def opposites
-  #{[ :down :up   ]
-    [   :up :down ]
-    [ :left :right]
-    [:right :left ]})
+(def opposite
+  {:down  :up
+   :up    :down
+   :left  :right
+   :right :left})
 
 (defn get-new-direction [m pos dir]
   (first
    (for [[d _] dirs
          :let [new-pos (move pos d)]
          :when (and
-                (not (opposites [d dir]))
+                (not= d (opposite dir))
                 (get m new-pos))]
      d)))
 
