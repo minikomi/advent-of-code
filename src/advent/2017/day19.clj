@@ -12,20 +12,16 @@
    :right [1 0]
    :left [-1 0]})
 
-(defn not-opposite [d1 d2]
-  (case [d1 d2]
-    [:down :up] false
-    [:up :down] false
-    [:left :right] false
-    [:right :left] false
-    true
-    ))
-
-
 (defn move [[x y] dir]
   (let [[dx dy] (dirs dir)]
     [(+ x dx)
      (+ y dy)]))
+
+(def opposites
+  #{[:down :up]
+    [:up :down]
+    [:left :right]
+    [:right :left]})
 
 (def test-input
   (slurp (io/resource "day19test.txt")))
@@ -35,7 +31,7 @@
    (for [[d _] dirs
          :let [new-pos (move pos d)]
          :when (and
-                (not-opposite d dir)
+                (not (opposites [d dir]))
                 (get m new-pos))]
      d)))
 
