@@ -53,10 +53,12 @@
       (let [new-pos (move pos dir)
             next-char (get m new-pos)]
         (if next-char
-          (recur new-pos dir (if (Character/isLetter next-char)
-                               (conj seen next-char)
-                               seen)
+          (recur new-pos
+                 (if (= \+ next-char)
+                   (get-char-neighbour m pos dir)
+                   dir)
+                 (if (Character/isLetter next-char)
+                   (conj seen next-char)
+                   seen)
                  (inc count))
-          (if-let [char-neighbour-dir (get-char-neighbour m pos dir)]
-            (recur pos char-neighbour-dir seen count)
-            [(apply str seen) (inc count)]))))))
+          [(apply str seen) (inc count)])))))
