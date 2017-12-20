@@ -25,9 +25,9 @@
 (defn get-new-direction [dir m pos]
   (case dir
     (:left :right)
-    (some #(test-dir m pos %) [:up :down])
+    (some (partial test-dir m pos) [:up :down])
     (:up :down)
-    (some #(test-dir m pos %) [:left :right])))
+    (some (partial test-dir m pos) [:left :right])))
 
 (defn make-pos-map [input-lines]
   (into {}
