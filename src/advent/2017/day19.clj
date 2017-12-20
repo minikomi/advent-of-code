@@ -16,8 +16,7 @@
 
 (defn move [[x y] dir]
   (let [[dx dy] (dirs dir)]
-    [(+ x dx)
-     (+ y dy)]))
+    [(+ x dx) (+ y dy)]))
 
 (defn test-dir [m pos dir]
   (when (get m (move pos dir)) dir))
