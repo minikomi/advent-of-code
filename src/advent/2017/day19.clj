@@ -15,18 +15,20 @@
    :left  [-1 0]})
 
 (defn move [[x y] dir]
+  (println "move" dir)
   (let [[dx dy] (dirs dir)]
     [(+ x dx)
      (+ y dy)]))
 
 (defn get-new-direction [m pos dir]
   (first
-   (for [[d _] (case dir
-                 (:left :right) [:up :down]
-                 (:up :down)    [:left :right])
+   (for [d (case dir
+             (:left :right) [:up :down]
+             (:up :down)    [:left :right])
          :let [new-pos (move pos d)]
          :when (get m new-pos)]
-     d)))
+     (do (println d)
+         d))))
 
 (defn make-pos-map [input-lines]
   (into {}
@@ -45,7 +47,9 @@
             next-char (get m new-pos)]
         (if next-char
           (recur new-pos
-                 (if (= \+ next-char) (get-new-direction m pos dir) dir)
-                 (if (Character/isLetter next-char) (conj seen next-char) seen)
+                 (if (= \+ next-char) (get-new-direction m new-pos dir) dir)
+                 (if (Character/isLetter next-char)
+                   (conj seen next-char)
+                   seen)
                  (inc count))
           [(apply str seen) (inc count)])))))
