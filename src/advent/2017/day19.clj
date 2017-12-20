@@ -14,8 +14,6 @@
    :right [1 0]
    :left  [-1 0]})
 
-(def all-dirs (set (map first dirs)))
-
 (defn move [[x y] dir]
   (let [[dx dy] (dirs dir)]
     [(+ x dx)
@@ -23,7 +21,9 @@
 
 (defn get-new-direction [m pos dir]
   (first
-   (for [[d _] (disj all-dirs dir)
+   (for [[d _] (case dir
+                 (:left :right) [:up :down]
+                 (:up :down)    [:left :right])
          :let [new-pos (move pos d)]
          :when (get m new-pos)]
      d)))
