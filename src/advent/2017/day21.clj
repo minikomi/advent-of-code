@@ -59,10 +59,7 @@
     (let [mtx-parts (split mtx split-val)
           expanded-parts
           (for [m mtx-parts
-                :let [rot (take 4 (iterate rotate m))
-                      all (into rot (mapv mirror rot))
-                      rule (first (filter #(some (:input %) all)
-                                          rules))]]
+                :let [rule (first (filter #((:input %) m) rules))]]
             (:output rule))
           expand-count (/ (count mtx) split-val)]
       (vec
