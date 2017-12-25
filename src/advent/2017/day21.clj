@@ -38,12 +38,7 @@
      :output output-mtx}))
 
 (defn parse-rules [input-raw]
-  (reduce
-   (fn [rulebook rule-line]
-     (let [{:keys [input output]} (parse-rule rule-line)]
-       (reduce conj rulebook (map vector input (repeat output)))))
-   (sorted-map)
-   (s/split-lines input-raw)))
+  (map parse-rule (s/split-lines input-raw)))
 
 (defn split [mtx n]
   (->> mtx
@@ -65,9 +60,10 @@
           expanded-parts
           (for [m mtx-parts
                 :let [rot (take 4 (iterate rotate m))
-                      flp (map mirror rot)]]
-            (or (first (keep rules flp))
-                (first (keep rules rot))))
+                      all (into rot (mapv mirror rot))
+                      rule (first (filter #(some (:input %) all)
+                                          rules))]]
+            (:output rule))
           expand-count (/ (count mtx) split-val)]
       (vec
        (mapcat
