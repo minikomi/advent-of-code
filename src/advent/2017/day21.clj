@@ -67,7 +67,7 @@
           expand-count (/ (count mtx) split-val)]
       (vec
        (mapcat
-        #(apply map concat (repeat []) %)
+        #(apply map concat %)
         (partition expand-count expanded-parts))))))
 
 (def input-raw (slurp (io/resource "day21.txt")))
