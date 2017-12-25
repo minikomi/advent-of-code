@@ -42,7 +42,7 @@
    (fn [rulebook rule-line]
      (let [{:keys [input output]} (parse-rule rule-line)]
        (reduce conj rulebook (map vector input (repeat output)))))
-   {}
+   (sorted-map)
    (s/split-lines input-raw)))
 
 (defn split [mtx n]
@@ -53,12 +53,13 @@
        (partition n)
        (map vec)))
 
-(def r (parse-rule test-rule-2))
 
 (defn step [rules mtx]
   (when-let [split-val (cond
-                         (zero? (mod (count mtx) 2)) 2
-                         (zero? (mod (count mtx) 3)) 3
+                         (and (zero? (mod (count mtx) 2))
+                              (zero? (mod (count (first mtx)) 2))) 2
+                         (and (zero? (mod (count mtx) 3))
+                              (zero? (mod (count (first mtx)) 3))) 3
                          :else false)]
     (let [mtx-parts (split mtx split-val)
           expanded-parts
@@ -75,12 +76,13 @@
 
 (def input-raw (slurp (io/resource "day21.txt")))
 
-(let [r (parse-rules input-raw)]
-  (count (filter #(= \# %)
-                 (flatten (nth (iterate (partial step r) seed-matrix)
-                               5)))))
+(defn solve [input n]
+  (let [r (parse-rules input)
+        steps (iterate (partial step r) seed-matrix)
+        final-step (nth steps n)]
+    (count (filter #(= \# %) (flatten final-step)))))
 
-(let [r (parse-rules input-raw)]
-  (count (filter #(= \# %)
-                 (flatten (nth (iterate (partial step r) seed-matrix)
-                               18)))))
+(comment
+  (solve input-raw 5)
+  (solve input-raw 18)
+  )
