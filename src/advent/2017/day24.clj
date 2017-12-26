@@ -23,7 +23,7 @@
 
 (defn get-tail [chain]
   (if (empty? chain) 0
-    (second (peek chain))))
+      (second (peek chain))))
 
 (defn get-joinable [ports seen chain]
   (let [tail (get-tail chain)]
@@ -33,16 +33,14 @@
 
 (defn get-port-tree [ports]
   (tree-seq
-   (fn [{:keys [chain seen]}]
-     (not-empty (get-joinable ports seen chain)))
+   identity
    (fn [{:keys [chain seen]}]
      (for [[jh jt :as n] (get-joinable ports seen chain)
-           :let [new-node
+           :let [new-tail-node
                  (if (= jh (get-tail chain))
-                   [jh jt]
-                   [jt jh])]]
+                   [jh jt] [jt jh])]]
        {:seen (conj seen n)
-        :chain (conj chain new-node)}))
+        :chain (conj chain new-tail-node)}))
    {:chain []
     :seen #{}}))
 
@@ -58,5 +56,4 @@
 (comment
   (apply max-key tally-port-chain (get-port-tree test-ports))
   (solve1 input-raw)
-
   )
