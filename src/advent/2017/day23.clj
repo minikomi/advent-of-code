@@ -122,13 +122,6 @@ jnz 1 -23")
 ;;part 2
 
 (defn prime? [n]
-  (and (odd? n)
-       (let [root (int (Math/sqrt n))]
-         (loop [i 3]
-           (or (> i root)
-               (and (not (zero? (mod n i)))
-                    (recur (+ i 2))))))))
-(defn prime? [n]
   (and
    (odd? n)
    (> n 3)
