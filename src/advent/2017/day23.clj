@@ -98,27 +98,43 @@ jnz 1 -23")
 
 ;; state
 
-(def initial-state {:registers {
-                                `a 0
-                                `b 0
-                                `c 0
-                                `d 0
-                                `e 0
-                                `f 0
-                                `g 0
-                                `h 0
-                                }
+(def initial-state {:registers {}
                     :pointer 0
                     :mul-count 0})
 
-(defn solve1 [input]
+(defn solve [initial-state input]
   (let [insts (vec (map parse-line (s/split-lines input)))]
-    (loop [s initial-state]
+    (loop [s initial-state c 0]
       (if (or
+           (= c 500000) ;; short circuit for 2nd part
            (neg? (:pointer s))
            (<= (count insts) (:pointer s))) s
-          (recur (step s (get insts (:pointer s))))))))
+          (recur (step s (get insts (:pointer s)))
+                 (inc c))))))
 
 (comment
-  (solve1 input-raw)
+  (:mul-count (solve initial-state input-raw))
+  (solve (assoc-in initial-state [:registers (symbol "a")] 1) input-raw)
+  ;; 109300 126300
+  )
+
+
+;;part 2
+
+(defn prime? [n]
+  (and (odd? n)
+       (let [root (int (Math/sqrt n))]
+         (loop [i 3]
+           (or (> i root)
+               (and (not (zero? (mod n i)))
+                    (recur (+ i 2))))))))
+(defn prime? [n]
+  (and
+   (odd? n)
+   (> n 3)
+   (not-any? #(zero? (mod n %))
+             (range 3 (inc (Math/sqrt n)) 2))))
+
+(comment
+  (count (remove prime? (range 109300 126301 17)))
   )
