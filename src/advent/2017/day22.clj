@@ -57,3 +57,41 @@
   (:infected (nth (iterate step (parse-mtx test-mtx)) 10000)) ;; 5587
   (:infected (nth (iterate step (parse-mtx input-raw)) 10000))
   )
+
+;; part 2
+
+(defn turn2 [{:keys [mtx pos dir]}]
+  (mod
+   (case (mtx pos)
+     \# (inc dir)
+     \W dir
+     \F (+ dir 2)
+     (dec dir))
+   4))
+
+(defn infect2 [{:keys [pos mtx infected] :as state}]
+  (case (mtx pos)
+    \#
+    (assoc state
+           :mtx (assoc mtx pos \F))
+    \F
+    (assoc state
+           :mtx (dissoc mtx pos))
+    \W
+    (assoc state
+           :mtx (assoc mtx pos \#)
+           :infected (inc infected))
+    (assoc state
+           :mtx (assoc mtx pos \W)
+           )))
+
+(defn step2 [state]
+  (as-> state $
+    (assoc $ :dir (turn2 $))
+    (infect2 $)
+    (assoc $ :pos (move $))))
+
+(comment
+  (:infected (nth (iterate step2 (parse-mtx test-mtx)) 10000000))
+  (:infected (nth (iterate step2 (parse-mtx input-raw)) 10000000))
+  )
