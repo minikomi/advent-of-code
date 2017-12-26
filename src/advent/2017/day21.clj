@@ -42,30 +42,34 @@
 
 (defn split [mtx n]
   (->> mtx
-       (map #(partition n %))
+       (map #(map vec (partition n %)))
+       (apply map vector)
+       (map #(map vec (partition n %)))
        (apply mapcat vector)
-       (map vec)
-       (partition n)
-       (map vec)))
+       (vec)))
 
+(defn join [expanded-parts expand-count]
+  (vec
+   (mapcat
+    #(apply map concat %)
+    (partition expand-count expanded-parts))))
+
+(def lookup-rule
+  (memoize (fn lookup-rule [rules m]
+             (first (filter #((:input %) m) rules)))))
 
 (defn step [rules mtx]
   (when-let [split-val (cond
-                         (and (zero? (mod (count mtx) 2))
-                              (zero? (mod (count (first mtx)) 2))) 2
-                         (and (zero? (mod (count mtx) 3))
-                              (zero? (mod (count (first mtx)) 3))) 3
+                         (zero? (mod (count (first mtx)) 2)) 2
+                         (zero? (mod (count (first mtx)) 3)) 3
                          :else false)]
     (let [mtx-parts (split mtx split-val)
           expanded-parts
           (for [m mtx-parts
-                :let [rule (first (filter #((:input %) m) rules))]]
+                :let [rule (lookup-rule rules m)]]
             (:output rule))
           expand-count (/ (count mtx) split-val)]
-      (vec
-       (mapcat
-        #(apply map concat %)
-        (partition expand-count expanded-parts))))))
+      (join expanded-parts expand-count))))
 
 (def input-raw (slurp (io/resource "day21.txt")))
 
@@ -73,7 +77,7 @@
   (let [r (parse-rules input)
         steps (iterate (partial step r) seed-matrix)
         final-step (nth steps n)]
-    (count (filter #(= \# %) (flatten final-step)))))
+    (count (filter #{\#} (flatten final-step)))))
 
 (comment
   (solve input-raw 5)
