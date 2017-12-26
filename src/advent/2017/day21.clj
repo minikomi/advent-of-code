@@ -54,9 +54,8 @@
     #(apply map concat %)
     (partition expand-count expanded-parts))))
 
-(def lookup-rule
-  (memoize (fn lookup-rule [rules m]
-             (first (filter #((:input %) m) rules)))))
+(defn lookup-rule [rules m]
+  (first (filter #((:input %) m) rules))
 
 (defn step [rules mtx]
   (when-let [split-val (cond
