@@ -59,7 +59,8 @@
        get-port-tree
        (map (juxt #(count (:chain %))
                   tally-port-chain))
-       (last)
+       (sort #(compare %2 %1))
+       (first)
        (second)
        ))
 
