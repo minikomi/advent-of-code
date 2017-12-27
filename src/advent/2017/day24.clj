@@ -53,7 +53,19 @@
        (map tally-port-chain)
        (apply max)))
 
+
+(defn solve2 [input]
+  (->> (map parse-line (s/split-lines input))
+       get-port-tree
+       (map (juxt #(count (:chain %))
+                  tally-port-chain))
+       (last)
+       (second)
+       ))
+
 (comment
   (apply max-key tally-port-chain (get-port-tree test-ports))
   (solve1 input-raw)
+  (solve2 test-input)
+  (solve2 input-raw)
   )
