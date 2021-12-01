@@ -17,7 +17,7 @@
 10/1
 9/10")
 
-(def input-raw (slurp (io/resource "day24.txt")))
+(def input-raw (slurp (io/resource "2017/day24.txt")))
 
 (def test-ports (mapv parse-line (s/split-lines test-input)))
 

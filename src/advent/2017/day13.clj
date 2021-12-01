@@ -5,7 +5,7 @@
             [clojure.set :as set]))
 
 (def input-raw
-  (s/trim (slurp (io/resource "day13.txt"))))
+  (s/trim (slurp (io/resource "2017/day13.txt"))))
 
 (def get-states
   (memoize

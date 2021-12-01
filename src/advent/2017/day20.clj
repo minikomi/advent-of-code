@@ -3,10 +3,10 @@
             [clojure.string :as s]))
 
 (def input-raw
-  (slurp (io/resource "day20.txt")))
+  (slurp (io/resource "2017/day20.txt")))
 
 (def test-input
-  (slurp (io/resource "day20test.txt")))
+  (slurp (io/resource "2017/day20test.txt")))
 
 (defn manhattan [v]
   (reduce #(+ % (Math/abs %2)) 0 v))

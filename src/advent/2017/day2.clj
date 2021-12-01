@@ -10,7 +10,7 @@
   (apply + (map process-row rows)))
 
 (def input
-  (->> (io/resource "day2.txt")
+  (->> (io/resource "2017/day2.txt")
        slurp
        s/split-lines
        (mapv #(mapv read-string (s/split % #"\t")))))

@@ -70,7 +70,7 @@
           expand-count (/ (count mtx) split-val)]
       (join expanded-parts expand-count))))
 
-(def input-raw (slurp (io/resource "day21.txt")))
+(def input-raw (slurp (io/resource "2017/day21.txt")))
 
 (defn solve [input n]
   (let [r (parse-rules input)

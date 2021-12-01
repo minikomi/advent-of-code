@@ -48,7 +48,7 @@ c inc -20 if c == 10")
               mod-value)
       primed-registers)))
 
-(def input (slurp (io/resource "day8.txt")))
+(def input (slurp (io/resource "2017/day8.txt")))
 
 (defn solve1 [input]
   (->> (parse-input input)

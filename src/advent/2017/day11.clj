@@ -4,7 +4,7 @@
             [advent.util :as util]))
 
 (def input-raw
-  (s/trim (slurp (io/resource "day11.txt"))))
+  (s/trim (slurp (io/resource "2017/day11.txt"))))
 
 (def get-dir
   {"n" [0 1 -1]

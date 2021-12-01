@@ -51,7 +51,7 @@
      :pos [(int (/ x-count 2))
            (int (/ y-count 2))]}))
 
-(def input-raw (slurp (io/resource "day22.txt")))
+(def input-raw (slurp (io/resource "2017/day22.txt")))
 
 (comment
   (:infected (nth (iterate step (parse-mtx test-mtx)) 10000)) ;; 5587

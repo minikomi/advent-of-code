@@ -34,16 +34,16 @@ gyxo (61)
 cntj (57)")))
 
 (def input
-  (map parse-line (s/split-lines (slurp (io/resource "day7.txt")))))
+  (map parse-line (s/split-lines (slurp (io/resource "2017/day7.txt")))))
 
 (def input2
-  (map parse-line (s/split-lines (slurp (io/resource "day72.txt")))))
+  (map parse-line (s/split-lines (slurp (io/resource "2017/day72.txt")))))
 
 (def input-deep
-  (map parse-line (s/split-lines (slurp (io/resource "day7deep.txt")))))
+  (map parse-line (s/split-lines (slurp (io/resource "2017/day7deep.txt")))))
 
 (def input-bork
-  (map parse-line (s/split-lines (slurp (io/resource "day7-bork.txt")))))
+  (map parse-line (s/split-lines (slurp (io/resource "2017/day7-bork.txt")))))
 
 (defn input->map [input]
   (into {} (map #(vector (:name %) %)) input))

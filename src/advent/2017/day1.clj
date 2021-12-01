@@ -1,7 +1,7 @@
 (ns advent.2017.day1
   (:require [clojure.java.io :as io]))
 
-(def input (slurp (io/resource "day1.txt")))
+(def input (slurp (io/resource "2017/day1.txt")))
 
 (defn rotate [n v]
   (into (subvec v n)

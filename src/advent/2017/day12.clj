@@ -5,7 +5,7 @@
             [clojure.set :as set]))
 
 (def input-raw
-  (s/trim (slurp (io/resource "day12.txt"))))
+  (s/trim (slurp (io/resource "2017/day12.txt"))))
 
 (def test-input
   "0 <-> 2

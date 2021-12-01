@@ -4,7 +4,7 @@
             [advent.util :as util]))
 
 (def input-raw
-  (s/trim (slurp (io/resource "day10.txt"))))
+  (s/trim (slurp (io/resource "2017/day10.txt"))))
 
 (def input
   (map read-string (s/split input-raw #",")))

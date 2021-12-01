@@ -1,7 +1,7 @@
 (ns advent.2017.day9
   (:require [clojure.java.io :as io]))
 
-(def input (slurp (io/resource "day9.txt")))
+(def input (slurp (io/resource "2017/day9.txt")))
 
 (defn solve1 [input]
   (loop [s     (vec (reverse input))

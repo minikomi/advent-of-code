@@ -3,10 +3,10 @@
             [clojure.string :as s]))
 
 (def input-raw
-  (slurp (io/resource "day19.txt")))
+  (slurp (io/resource "2017/day19.txt")))
 
 (def test-input
-  (slurp (io/resource "day19test.txt")))
+  (slurp (io/resource "2017/day19test.txt")))
 
 (def dirs
   {:up    [0 -1]

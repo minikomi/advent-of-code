@@ -3,7 +3,7 @@
             [clojure.string :as s]
             [advent.util :as util]))
 
-(def input (slurp (io/resource "day16.txt")))
+(def input (slurp (io/resource "2017/day16.txt")))
 
 ;; - Spin,     written sX, makes X programs move from the end to the front,
 ;;             but maintain their order otherwise. (For example, s3 on abcde produces cdeab).

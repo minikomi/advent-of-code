@@ -6,7 +6,7 @@
 (set! *unchecked-math* :warn-on-boxed)
 
 (def input
-  (->> (io/resource "day5.txt")
+  (->> (io/resource "2017/day5.txt")
        slurp
        s/split-lines
        (mapv #(Integer/parseInt %))))

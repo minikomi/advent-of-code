@@ -3,7 +3,7 @@
             [clojure.string :as s]))
 
 (def input
-  (->> (io/resource "day4.txt")
+  (->> (io/resource "2017/day4.txt")
        slurp
        s/split-lines
        (mapv #(s/split % #"\s+"))))
