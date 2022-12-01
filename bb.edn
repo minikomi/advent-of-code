@@ -1,0 +1,19 @@
+{:paths
+ ["src/tasks"]
+
+ :tasks
+ {:requires
+  ([babashka.fs :as fs]
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as str])
+
+  lint
+  {:depends [lint-deps]
+   :task    (shell "clj-kondo --lint src")}
+
+  lint-deps
+  (when (fs/modified-since ".clj-kondo/.cache" "deps.edn")
+    (shell "bash -c" "clj-kondo --copy-configs --dependencies --lint \"$(clojure -Spath -A:provided:dev)\" --parallel"))
+
+  start-repl
+  (shell "clj -M:repl/headless:test")}}

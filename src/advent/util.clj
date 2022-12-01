@@ -16,3 +16,12 @@
                               (/ (count ~stopped-bindings) 2))
                          {:current-symbols ~caught-symbols}))))
     `(let* ~(destructure bindings) ~@body)))
+
+(defmacro with-clipboard [& body]
+  `(binding [*out* (java.io.StringWriter.)]
+     (let [result# (do ~@body)]
+       (.. Toolkit
+           (getDefaultToolkit)
+           (getSystemClipboard)
+           (setContents (StringSelection. (str *out*)) nil))
+       result#)))
