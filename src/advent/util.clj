@@ -1,4 +1,6 @@
-(ns advent.util)
+(ns advent.util
+  (:import [java.awt Toolkit]
+           [java.awt.datatransfer StringSelection]))
 
 (defmacro let-stop [bindings & body]
   (if (some #{'*stop*} bindings)
@@ -25,3 +27,5 @@
            (getSystemClipboard)
            (setContents (StringSelection. (str *out*)) nil))
        result#)))
+
+(with-clipboard (print "aaa"))
