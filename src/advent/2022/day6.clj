@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [clojure.set :as set]))
 
-(def input (->> (io/resource "2022/day7-input1.txt")
+(def input (->> (io/resource "2022/day6-input1.txt")
                 slurp))
 
 (def test-inputs ["mjqjpqmgbljsphdztnvjfqwrcgsmlb"
