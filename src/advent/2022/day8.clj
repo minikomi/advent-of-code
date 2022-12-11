@@ -48,6 +48,36 @@
                 slurp))
 
 (comment
-
   (solve test-input)
-  (solve input))
+  (solve input)
+  ;;
+  )
+
+(defn create-map [input]
+  (let [grid (parse-input input)
+        all-nodes (reduce into [] grid)]
+    {:trees (into {} all-nodes)
+     :w (count (first grid))
+     :h (count grid)}))
+
+(def test-map (create-map test-input))
+
+(defn dir-score [{:keys [trees w h]} start dir]
+  (let [v (get trees start)]
+    (loop [[y x] start n 0]
+     (let [[new-y new-x :as new-pos] (case dir
+                     :up [(dec y) x]
+                     :down [(inc y) x]
+                     :left [y (dec x)]
+                     :right [y (inc x)])]
+         (cond (or (> 0 new-x) (= w new-x)
+                   (> 0 new-y) (= h new-y)) n
+               (<= v (get trees new-pos)) (inc n)
+               :else (recur new-pos (inc n)))))))
+
+(defn tree-score [tree-map start]
+  (apply * (map #(dir-score tree-map start %) [:up :left :down :right])))
+
+(defn solve2 [input]
+  (apply max (let [tree-map (create-map input)]
+     (map #(tree-score tree-map %)  (keys (:trees tree-map))))))
