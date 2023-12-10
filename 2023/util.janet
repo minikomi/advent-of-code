@@ -7,3 +7,9 @@
         (break)
         (array/push ret (string/trim l)))))
   ret)
+
+(defn read-file [filename]
+  (with [f (file/open filename)]
+    (var ret (file/read f :all))
+    (file/close f)
+    ret))
