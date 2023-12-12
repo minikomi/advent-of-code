@@ -76,7 +76,6 @@
          :when (not= [0 0] [y-offset x-offset])
          :let [pos [(+ l y-offset) (+ c x-offset)]
                entry (get num-map pos)]]
-
     (when-let [[num-str id] entry]
       (when (not (get seen-val-ids id))
         (array/push gear-vals num-str)
