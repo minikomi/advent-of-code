@@ -13,3 +13,10 @@
     (var ret (file/read f :all))
     (file/close f)
     ret))
+
+(defmacro loopv [head & body]
+  (with-syms [$x]
+    ~(do
+       (var ,$x nil)
+       (loop ,head (set ,$x (do ,;body)))
+       ,$x)))
