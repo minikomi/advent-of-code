@@ -90,6 +90,8 @@ humidity-to-location map:
   (seq [m :in mapping-data]
     (set loc (get-mapping loc m))))
 
+(test (solve2 input1) 46)
+
 (defn plot-all-mappings [seeds mapping-data]
   (map |(get-locations-seq-for-seed $0 mapping-data) seeds))
 
@@ -104,3 +106,31 @@ humidity-to-location map:
 (def day5-input (util/read-file "./resources/day5.txt"))
 
 (test (solve day5-input) 175622908)
+
+(defn get-mapping-rev [seed [from to & mappings]]
+  (let
+    [dest (generate [[src dest width] :in mappings
+                     :when (between src (+ src width) seed)]
+            (+ dest (- seed src)))]
+    (or (resume dest) seed)))
+
+(defn solve2-brute-reverse [input]
+  (resume
+    (generate [i :range [4000000 50000000]
+               :let [[seeds & mapping-data] (peg/match parser input)
+                     check (fn [v]
+                             (some
+                               (fn [[a w]]
+                                 (between a (+ a w) v))
+                               (partition 2 seeds)))
+                     mappings (reverse mapping-data)
+                     loc (do
+                           (var loc i)
+                           (loop [m :in mappings
+                                  :let [new-loc (get-mapping-rev loc m)]]
+                             (set loc new-loc))
+                           loc)
+                     ok (check loc)]
+               :when ok]
+      i)))
+# 5200543
