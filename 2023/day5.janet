@@ -90,8 +90,6 @@ humidity-to-location map:
   (seq [m :in mapping-data]
     (set loc (get-mapping loc m))))
 
-(test (solve2 input1) 46)
-
 (defn plot-all-mappings [seeds mapping-data]
   (map |(get-locations-seq-for-seed $0 mapping-data) seeds))
 
@@ -134,3 +132,4 @@ humidity-to-location map:
                :when ok]
       i)))
 # 5200543
+
