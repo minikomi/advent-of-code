@@ -1,6 +1,8 @@
 (import ./util :fresh true)
 (use judge)
 
+(def day7-input (util/read-file "./resources/day7.txt"))
+
 (def input1
   `32T3K 765
 T55J5 684
@@ -118,7 +120,6 @@ QQQJA 483`)
 
 (test (solve input1) 6440)
 
-(def day7-input (util/read-file "./resources/day7.txt"))
 
 (test (solve day7-input) 250898830)
 
@@ -155,7 +156,6 @@ QQQJA 483`)
 
 (test (joker-hand-value "QJJQ2") :four-of-a-kind)
 (test (joker-hand-value "JJJJJ") :five-of-a-kind)
-
 
 (defn joker-parse-hand [[hand bid]]
   (let [hv (joker-hand-value hand)]
