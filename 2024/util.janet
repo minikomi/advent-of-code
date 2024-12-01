@@ -36,3 +36,6 @@
       (/ (* lcm-acc n) (math/gcd lcm-acc n)))
     1
     vs))
+
+(defn transpose [arrs]
+    (apply map array arrs))

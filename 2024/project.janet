@@ -4,4 +4,4 @@
   ["https://github.com/janet-lang/spork"
    "sh"
    {:url "https://github.com/ianthehenry/judge.git"
-    :tag "v2.7.0"}])
+    :tag "v2.9.0"}])
