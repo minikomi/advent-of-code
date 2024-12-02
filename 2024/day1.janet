@@ -40,7 +40,7 @@
 (test (solve1 (peg/match grammar-pt1 day1-input)) 2970687)
 
 (defn solve2 [lines]
-  (let [[l1 l2] (transpose lines)
+  (let [[l1 l2] (util/transpose lines)
         freqs (frequencies l2)
         ns (map (fn [n] (* (get freqs n 0) n)) l1)]
     (apply + ns)))

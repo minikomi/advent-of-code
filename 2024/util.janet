@@ -10,7 +10,7 @@
 
 (defn read-file [filename]
   (with [f (file/open filename)]
-    (var ret (file/read f :all))
+    (var ret (string/trim (file/read f :all)))
     (file/close f)
     ret))
 
