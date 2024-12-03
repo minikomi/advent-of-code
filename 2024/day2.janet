@@ -34,11 +34,12 @@
 (test (partition-pairs @[1 2 3 4]) @[@[1 2] @[2 3] @[3 4]])
 
 (defn grade [row]
-  (let [[a b & rest] row]
-    (let [compare (if (< a b) < >)]
-      (seq [[a b] :in (partition-pairs row)]
+  (let [[a b & rest] row
+        compare (if (< a b) < >)
+        pairs (partition-pairs row)]
+      (seq [[a b] :in pairs]
         (and (compare a b)
-             (> 4 (math/abs (- a b))))))))
+             (> 4 (math/abs (- a b)))))))
 
 (test (map grade (parse input1))
       @[@[true true true true]
@@ -64,39 +65,32 @@
 (test (remove-idx @[1 2 3 4] 1) @[1 3 4])
 
 (defn grade2 [row]
-  (first
-    (filter |(all true? (grade $))
-            (array/concat
-              @[row]
-              (map (fn [i] (remove-idx row i)) (range (length row)))))))
+  (some |(all true? (grade $))
+        (array/concat
+          @[row]
+          (map (fn [i] (remove-idx row i)) (range (length row))))))
 
 
 (deftest "grade2"
   (test (grade2 @[1 5])
-        @[5])
+    true)
 
   (test (grade2 @[7 6 4 2 1])
-        @[7 6 4 2 1])
+    true)
 
   (test (grade2 @[1 3 2 4 5])
-        @[1 2 4 5])
+    true)
 
   (test (grade2 @[1 2 7 8 9])
         nil))
 
 (test (map grade2 (parse input1))
-      @[@[7 6 4 2 1]
-        nil
-        nil
-        @[1 2 4 5]
-        @[8 6 4 1]
-        @[1 3 6 7 9]])
+  @[true nil nil true true true])
 
 
 (defn solve2 [rows]
   (->> rows
-       (map grade2)
-       (filter identity)
+       (filter grade2)
        length))
 
 (test (solve2 (parse input1)) 4)
