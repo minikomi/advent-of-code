@@ -38,4 +38,4 @@
     vs))
 
 (defn transpose [arrs]
-    (apply map array arrs))
+  (apply map array arrs))

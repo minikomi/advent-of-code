@@ -22,16 +22,16 @@
 (defn parse [s] (peg/match grammar-pt1 s))
 
 (test (parse input1)
-  @[@[3 4]
-    @[4 3]
-    @[2 5]
-    @[1 3]
-    @[3 9]
-    @[3 3]])
+      @[@[3 4]
+        @[4 3]
+        @[2 5]
+        @[1 3]
+        @[3 9]
+        @[3 3]])
 
 (defn solve1 (lines)
   (->> lines
-      (util/transpose)
+       (util/transpose)
        (map sort)
        (apply map (fn [a b] (math/abs (- a b))))
        (reduce + 0)))

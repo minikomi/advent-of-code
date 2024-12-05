@@ -37,9 +37,9 @@
   (let [[a b & rest] row
         compare (if (< a b) < >)
         pairs (partition-pairs row)]
-      (seq [[a b] :in pairs]
-        (and (compare a b)
-             (> 4 (math/abs (- a b)))))))
+    (seq [[a b] :in pairs]
+      (and (compare a b)
+           (> 4 (math/abs (- a b)))))))
 
 (test (map grade (parse input1))
       @[@[true true true true]
@@ -73,19 +73,19 @@
 
 (deftest "grade2"
   (test (grade2 @[1 5])
-    true)
+        true)
 
   (test (grade2 @[7 6 4 2 1])
-    true)
+        true)
 
   (test (grade2 @[1 3 2 4 5])
-    true)
+        true)
 
   (test (grade2 @[1 2 7 8 9])
         nil))
 
 (test (map grade2 (parse input1))
-  @[true nil nil true true true])
+      @[true nil nil true true true])
 
 
 (defn solve2 [rows]

@@ -1,7 +1,7 @@
 (import ./util)
 (use judge)
 
- (def day4-input (util/read-file "resources/day4.txt"))
+(def day4-input (util/read-file "resources/day4.txt"))
 
 # Part 1 -----------------------------------------
 
@@ -13,26 +13,25 @@ XMAS.S
 
 (def grammar-pt1 (peg/compile ~{:pos (/ (* (line) (column)) ,tuple)
                                 :xmas (* :pos (<- (+ "X" "M" "A" "S")))
-                                :main (some (+ :xmas 1))
-                                }))
+                                :main (some (+ :xmas 1))}))
 
 (defn parse [s]
   (table ;(peg/match grammar-pt1 s)))
 
 (test (parse input1)
-  @{[1 3] "X"
-    [2 2] "S"
-    [2 3] "A"
-    [2 4] "M"
-    [2 5] "X"
-    [3 2] "A"
-    [3 5] "A"
-    [4 1] "X"
-    [4 2] "M"
-    [4 3] "A"
-    [4 4] "S"
-    [4 6] "S"
-    [5 2] "X"})
+      @{[1 3] "X"
+        [2 2] "S"
+        [2 3] "A"
+        [2 4] "M"
+        [2 5] "X"
+        [3 2] "A"
+        [3 5] "A"
+        [4 1] "X"
+        [4 2] "M"
+        [4 3] "A"
+        [4 4] "S"
+        [4 6] "S"
+        [5 2] "X"})
 
 (defn get-xmas-starts [mtx]
   (->> (pairs mtx)
@@ -46,20 +45,20 @@ XMAS.S
 (defn check-xmas [mtx [y x]]
   (var found 0)
   (loop [[dy dx] :in [[-1 -1] [-1 0] [-1 1]
-                     [ 0 -1]        [ 0 1]
-                     [ 1 -1] [1  0] [ 1 1]]
-        :let [expect (map (fn [[l v]]
-                            [l [(+ y (* dy v)) (+ x (* dx v))]])
-                          [["M" 1] ["A" 2] ["S" 3]])]
-        :when (all (fn [[l pos]]
-                     (= l (get mtx pos)))
-                   expect)]
+                      [0 -1] [0 1]
+                      [1 -1] [1 0] [1 1]]
+         :let [expect (map (fn [[l v]]
+                             [l [(+ y (* dy v)) (+ x (* dx v))]])
+                           [["M" 1] ["A" 2] ["S" 3]])]
+         :when (all (fn [[l pos]]
+                      (= l (get mtx pos)))
+                    expect)]
     (++ found))
   found)
 
 (deftest "check-xmas"
   (test (check-xmas (parse input1) [1 3])
-    1))
+        1))
 
 (defn solve1 [str-input]
   (def mtx (parse str-input))
@@ -114,12 +113,12 @@ S.S.S.S.S.
 .A.A.A.A..
 M.M.M.M.M.
 ..........`) [2 3])
-  true)
+      true)
 
 (defn solve2 [input-str]
- (def mtx (parse input-str))
- (def x-mas-starts (get-x-mas-starts mtx))
- (length (filter |(check-x-mas mtx $) x-mas-starts)))
+  (def mtx (parse input-str))
+  (def x-mas-starts (get-x-mas-starts mtx))
+  (length (filter |(check-x-mas mtx $) x-mas-starts)))
 
 (test (solve2 input2) 9)
 (test (solve2 day4-input) 1902)
