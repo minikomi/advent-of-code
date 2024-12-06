@@ -32,14 +32,10 @@
 61,13,29
 97,13,75,29,47`)
 
-(defn fnil [f default]
-  (fn [v & rest]
-    (f (or v default) ;rest)))
-
 (defn build-order-map [orderings]
   (util/loopv [:let [t @{}]
                [before after] :in orderings]
-              (update t before (fnil array/push @[]) after)))
+              (update t before (util/fnil array/push @[]) after)))
 
 (def grammar-pt1 (peg/compile ~{:order-line (group (* (number :d+) "|" (number :d+) "\n"))
                                 :page-list (group (* (some (* (number :d+) (? ","))) (? "\n")))
