@@ -1,4 +1,5 @@
 (import ./util :reload-all)
+(import spork/ev-utils)
 (use judge)
 
 (def input1 `....#.....
@@ -214,17 +215,18 @@
         obs-positions (keys ((solve1 string-input) :visited))
         [start-pos start-dir] (find-start pos-table)]
     (var looped 0)
-    (loop [obs-pos :in obs-positions]
+    (ev-utils/pcall
+      (fn [n]
+        (var obs-pos (get obs-positions n))
         (when (and (= "." (get pos-table obs-pos))
                    (not= start-pos obs-pos))
           (let [final-state (does-it-loop? (put (table/clone pos-table) obs-pos "O") [start-pos start-dir])]
             (when (= :loop (final-state :current-dir))
               (++ looped)))))
+      (length obs-positions))
     looped))
-
-
 
 (test (solve2 input1) 6)
 (test (solve2 day6-input) 1516)
 
-(defn main [& args] (solve2 day6-input))
+(defn main [& args] (pp (solve2 day6-input)))
