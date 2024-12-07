@@ -46,7 +46,7 @@
     (f ;args-with-defaults ;(drop (length defaults) args))))
 
 (def mtx-grammar
-  (peg/compile ~{:pos (/ (* (line) (column)) ,tuple)
+  (peg/compile ~{:pos (/ (* (line) (column)) (fn [a b] (string a "-" b)))
                  :char (* :pos (<- 1))
                  :main (/ (some (+ :s :char)) ,table)}))
 

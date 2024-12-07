@@ -142,70 +142,32 @@
    "v" "<"
    "<" "^"})
 
-(defn step [pos-table {:pos [y x] :current-dir current-dir :visited visited}]
-  (let [next-visited (put-in visited [[y x] current-dir] true)
-        [dy dx] (get directions current-dir current-dir)
-        next-pos [(+ y dy) (+ x dx)]
-        next-val (get pos-table next-pos)]
-      (cond
-        (nil? next-val) {:pos next-pos :current-dir :finish :visited next-visited}
-        (or (= next-val "#")
-            (= next-val "O"))
-            {:pos [y x] :current-dir (get turn-map current-dir) :visited next-visited}
-        (not (nil? (get-in visited [next-pos current-dir]))) {:pos [y x] :current-dir :loop :visited next-visited}
-        :else {:pos next-pos :current-dir current-dir :visited next-visited})))
-
-(test (let [pos-table (parse input1)
-            [pos current-dir] (find-start pos-table)]
-           (step pos-table {:pos pos :current-dir current-dir :visited @{}}))
-  {:current-dir "^"
-   :pos [6 5]
-   :visited @{[7 5] @{"^" true}}})
+(defn run-loop [pos-table start-pos start-dir]
+  (var pos start-pos)
+  (var current-dir start-dir)
+  (var visited @{})
+  (while (not (or (= current-dir :finish) (= current-dir :loop)))
+    (put-in visited [pos current-dir] true)
+    (let [dir (get directions current-dir)
+          next-pos [(+ (pos 0) (dir 0)) (+ (pos 1) (dir 1))]
+          next-val (get pos-table next-pos)]
+      (cond (nil? next-val) (set current-dir :finish)
+            (or (= next-val "#")
+                (= next-val "O")) (set current-dir (get turn-map current-dir))
+            (not (nil? (get-in visited [next-pos current-dir]))) (set current-dir :loop)
+            :else (set pos next-pos))))
+  {:pos pos
+   :visited visited
+   :current-dir current-dir})
 
 (defn solve1 [string-input]
-  (var state nil)
   (let [pos-table (parse string-input)
-        [pos current-dir] (find-start pos-table)]
-    (set state {:pos pos :current-dir current-dir :visited @{pos @{current-dir true}}})
-    (loop [new-state :iterate (step pos-table state)
-           :until (= (get state :current-dir) :finish)]
-      (set state new-state))
-    state))
-
+        [start-pos start-dir] (find-start pos-table)]
+    (run-loop pos-table start-pos start-dir)))
 
 # Note: we finish outside so dec
-(test (dec (length ((solve1 input1) :visited))) 41)
-(test (dec (length ((solve1 day6-input) :visited))) 4433)
-
-(defn does-it-loop? [pos-table [pos current-dir]]
-  (var state {:pos pos :current-dir current-dir :visited (tabseq [k :in (keys (parse input1))] k @{})})
-  (loop [new-state :iterate (step pos-table state)
-         :until (or (= (get state :current-dir) :finish)
-                    (= (get state :current-dir) :loop))]
-    (set state new-state))
-  state)
-
-(test (does-it-loop? input1 [7 4])
-  {:current-dir :loop
-   :pos [7 5]
-   :visited @{[2 5] @{">" true "^" true}
-              [2 6] @{">" true}
-              [2 7] @{">" true}
-              [2 8] @{">" true}
-              [2 9] @{">" true "v" true}
-              [3 5] @{"^" true}
-              [3 9] @{"v" true}
-              [4 5] @{"^" true}
-              [4 9] @{"v" true}
-              [5 5] @{"^" true}
-              [5 9] @{"v" true}
-              [6 5] @{"^" true}
-              [6 9] @{"v" true}
-              [7 5] @{"<" true "^" true :loop true}
-              [7 6] @{"<" true}
-              [7 7] @{"<" true}
-              [7 8] @{"<" true}
-              [7 9] @{"<" true "v" true}}})
+(test (length ((solve1 input1) :visited)) 41)
+(test (length ((solve1 day6-input) :visited)) 4433)
 
 (defn solve2 [string-input]
   (let [pos-table (parse string-input)
@@ -218,11 +180,11 @@
     (ev-utils/pcall
       (fn [n]
         (var obs-pos (get obs-positions n))
-        (when (and (= "." (get pos-table obs-pos))
-                   (not= start-pos obs-pos))
-          (let [final-state (does-it-loop? (put (table/clone pos-table) obs-pos "O") [start-pos start-dir])]
-            (when (= :loop (final-state :current-dir))
-              (++ looped)))))
+        (when (and (= "." (get pos-table obs-pos)) (not= start-pos obs-pos))
+          (put pos-table obs-pos "O")
+          (let [final-state (run-loop pos-table start-pos start-dir)]
+            (when (= :loop (final-state :current-dir)) (++ looped)))
+          (put pos-table obs-pos ".")))
       (length obs-positions))
     looped))
 
