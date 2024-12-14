@@ -51,14 +51,8 @@
     "............"
     "............"])
 
-(defn add-v [v1 v2]
-  [(+ (v1 0) (v2 0)) (+ (v1 1) (v2 1))])
-
-(defn sub-v [v1 v2]
-  [(- (v1 0) (v2 0)) (- (v1 1) (v2 1))])
-
 (defn dist-v [v1 v2]
-  (let [d (sub-v v1 v2)]
+  (let [d (util/sub-v v1 v2)]
     (+ (math/abs (d 0)) (math/abs (d 1)))))
 
 (defn in-map? [antenna-map pos]
@@ -72,7 +66,7 @@
   (seq [[pos1 v1] :in (pairs (antenna-map :map))
         [pos2 v2] :in (pairs (antenna-map :map))
         :when (and (= v1 v2) (not= pos1 pos2))
-        :let [new-node (add-v pos1 (sub-v pos1 pos2))]
+        :let [new-node (util/add-v pos1 (util/sub-v pos1 pos2))]
         :when (in-map? antenna-map new-node)]
      [new-node v1]))
 
@@ -108,9 +102,9 @@
   (loop [[pos1 v1] :in (pairs (antenna-map :map))
          [pos2 v2] :in (pairs (antenna-map :map))
          :when (and (= v1 v2) (not= pos1 pos2))
-         :before (var dist (sub-v pos1 pos2))
+         :before (var dist (util/sub-v pos1 pos2))
          :before (var p pos1)
-         new-node :iterate (do (set p (add-v p dist)) p)
+         new-node :iterate (do (set p (util/add-v p dist)) p)
          :while (in-map? antenna-map new-node)]
    (put antenna-map new-node "#"))
   antenna-map)

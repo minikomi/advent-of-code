@@ -118,3 +118,9 @@
   (if (= nil n-workers)
     (pmap-full f data)
     (pmap-limited f data n-workers)))
+
+(defn add-v [v1 v2]
+  [(+ (v1 0) (v2 0)) (+ (v1 1) (v2 1))])
+
+(defn sub-v [v1 v2]
+  [(- (v1 0) (v2 0)) (- (v1 1) (v2 1))])
