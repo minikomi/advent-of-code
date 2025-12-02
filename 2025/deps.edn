@@ -1,0 +1,6 @@
+{:deps  {org.clojure/clojure {:mvn/version "1.12.3"}
+         instaparse/instaparse {:mvn/version "1.5.0"}}
+ :paths [:clj-paths :resource-paths]
+ :aliases
+ {:clj-paths ["src"]
+  :resource-paths ["resources"]}}

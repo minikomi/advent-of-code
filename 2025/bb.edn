@@ -1,0 +1,21 @@
+{:paths
+ ["src/tasks"]
+
+ :deps {io.github.babashka/instaparse-bb {:git/sha "0d0c88ec408ab675888f92819b8f8f32de602a91"}}
+
+ :tasks
+ {:requires
+  ([babashka.fs :as fs]
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as str])
+
+  lint
+  {:depends [lint-deps]
+   :task    (shell "clj-kondo --lint src")}
+
+  lint-deps
+  (when (fs/modified-since ".clj-kondo/.cache" "deps.edn")
+    (shell "bash -c" "clj-kondo --copy-configs --dependencies --lint \"$(clojure -Spath -A:provided:dev)\" --parallel"))
+
+  start-repl
+  (shell "clj -M:repl/headless:test")}}

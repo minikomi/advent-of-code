@@ -11,3 +11,6 @@ pom.xml.asc
 .hgignore
 .hg/
 .DS_Store
+.cpcache/
+.nrepl-port
+2025/inputs/
