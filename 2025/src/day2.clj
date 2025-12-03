@@ -43,14 +43,14 @@
   (solve1 input1)
   ((solve1 (slurp "./inputs/day2.txt"))))
 
-(defn repeated-block? [s]
+(defn repeated-block? [^String s]
   (let [n (count s)]
     (let [pos (.indexOf (str s s) s 1)]
       (and (>= pos 1) (< pos n)))))
 
 (comment (repeated-block? "ababab"))
 
-(defn valid-id-2? [id]
+(defn valid-id-2? [^Integer id]
   (let [s (str id)]
     (if
      (>= 10 id) true
@@ -74,5 +74,5 @@
 (comment (solve2 input1))
 
 (comment
-  (solve2 (slurp "./inputs/day2.txt")))
+  (time (solve2 (slurp "./inputs/day2.txt"))))
 
