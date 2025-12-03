@@ -18,12 +18,12 @@
       :number clojure.edn/read-string}
      parse-tree)))
 
-(defn valid-id? [id]
-  (let [id (str id)]
-    (cond (odd? (count id)) true
-          :else (let [mid-point (/ (count id) 2)
-                      partitioned (partition mid-point id)]
-                  (apply distinct? partitioned)))))
+(defn valid-id? [^Integer id]
+  (let [^String s (str id)]
+    (cond (odd? (count s)) true
+          :else (let [mid-point (/ (count s) 2)]
+                  (not= (subs s 0 mid-point)
+                        (subs s mid-point))))))
 
 (comment
   (parse input1)
@@ -41,7 +41,7 @@
 
 (comment
   (solve1 input1)
-  ((solve1 (slurp "./inputs/day2.txt"))))
+  (time (solve1 (slurp "./inputs/day2.txt"))))
 
 (defn repeated-block? [^String s]
   (let [n (count s)]
@@ -50,7 +50,7 @@
 
 (comment (repeated-block? "ababab"))
 
-(defn valid-id-2? [^Integer id]
+(defn valid-id-2? [id]
   (let [s (str id)]
     (if
      (>= 10 id) true
