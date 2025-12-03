@@ -23,30 +23,19 @@ digit = #'[0-9]'"
      parse-tree)))
 
 (defn find-max-joltage [bank n]
-  (loop [n n
-         befores (vec (reverse (map-indexed vector bank)))
-         afters []
-         collect []]
-    (cond (zero? n) (map second (sort-by first collect))
-          (empty? befores)
-          (recur n (peek afters) (pop afters) collect)
-          :else
-          (let [[idx max1] (first (sort
-                                   (fn [[i1 [_ v1]]
-                                        [i2 [_ v2]]]
-                                     (if (= v1 v2)
-                                       (> i1 i2)
-                                       (>= v1 v2)))
-                                   (map-indexed vector befores)))
-                bef (subvec befores 0 idx)
-                aft (subvec befores (inc idx))]
-            (recur (dec n)
-                   bef
-                   (conj afters aft)
-                   (conj collect max1))))))
-
-(comment
-  (map (juxt identity #(find-max-joltage % 12)) (parse input1)))
+  (let [total (count bank)
+        can-remove (- total n)]
+    (loop [result []
+           pos 0
+           removals-left can-remove]
+      (if (= pos total)
+        (take n result)
+        (let [digit (nth bank pos)]
+          (if (and (pos? removals-left)
+                   (seq result)
+                   (> digit (peek result)))
+            (recur (pop result) pos (dec removals-left))
+            (recur (conj result digit) (inc pos) removals-left)))))))
 
 (defn solve1 [input-str]
   (transduce
@@ -56,6 +45,7 @@ digit = #'[0-9]'"
    + 0
    (parse input-str)))
 
+(map (juxt identity #(find-max-joltage % 2)) (parse input1))
 (solve1 input1)
 
 (comment
@@ -69,4 +59,4 @@ digit = #'[0-9]'"
    + 0
    (parse input-str)))
 
-(solve2 (str/trim (slurp "./inputs/day3.txt")))
+(time (solve2 (str/trim (slurp "./inputs/day3.txt"))))
