@@ -14,7 +14,7 @@
         parser (insta/parser grammar)
         parse-tree (parser s)]
     (insta/transform
-     {:range (fn [a b] (range a (inc b)))
+     {:range vector
       :number clojure.edn/read-string}
      parse-tree)))
 
@@ -32,43 +32,44 @@
     [d (valid-id? d)]))
 
 (defn solve1 [input-str]
-  (->> (parse input-str)
-       (map #(remove valid-id? %))
-       flatten
-       (reduce +)))
+  (transduce
+   (comp
+    (mapcat (fn [[a b]] (range a (inc b))))
+    (remove valid-id?))
+   +
+   (parse input-str)))
 
 (comment
-  (solve1 (slurp "./inputs/day2.txt")))
+  (solve1 input1)
+  ((solve1 (slurp "./inputs/day2.txt"))))
 
 (defn repeated-block? [s]
   (let [n (count s)]
-    (and (pos? n)
-         (let [pos (.indexOf (str s s) s 1)]
-           (and (>= pos 1) (< pos n))))))
+    (let [pos (.indexOf (str s s) s 1)]
+      (and (>= pos 1) (< pos n)))))
+
+(comment (repeated-block? "ababab"))
 
 (defn valid-id-2? [id]
-  (let [s (str id)
-        n (count s)]
-    (cond
-      (< n 2) true
-      (= \0 (first s)) false
-      :else (not (repeated-block? s)))))
-
-(valid-id-2? "123123123123")
-
-(["12" "12" "12"])
+  (let [s (str id)]
+    (if
+     (>= 10 id) true
+     (not (repeated-block? s)))))
 
 (comment
   (map (juxt identity valid-id-2?)
-       ["11"
-        "123123123" "12121212" "1112111211131112"
-        "123124123"]))
+       [11
+        22
+        123123123 12121212 1112111211131112
+        123124123]))
 
 (defn solve2 [input-str]
-  (->> (parse input-str)
-       (map #(remove valid-id-2? %))
-       (flatten)
-       (apply +)))
+  (transduce
+   (comp
+    (mapcat (fn [[a b]] (range a (inc b))))
+    (remove valid-id-2?))
+   +
+   (parse input-str)))
 
 (comment (solve2 input1))
 
