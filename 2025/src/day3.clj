@@ -1,6 +1,7 @@
 (ns day3
   (:require
    [clojure.string :as str]
+   [criterium.core :as c]
    [instaparse.core :as insta]))
 
 (def input1 "987654321111111
@@ -51,12 +52,22 @@ digit = #'[0-9]'"
 (comment
   (solve1 (str/trim (slurp "./inputs/day3.txt"))))
 
-(defn solve2 [input-str]
+(defn solve2 [inputs]
   (transduce
    (comp
     (map #(find-max-joltage % 12))
-    (map (fn [ns] (clojure.edn/read-string (apply str ns)))))
+    (map (fn [ns] (reduce (fn ^long [^long v ^long n] (+ (* 10 v) n)) 0 ns))))
    + 0
-   (parse input-str)))
+   inputs))
 
-(time (solve2 (str/trim (slurp "./inputs/day3.txt"))))
+(def ins (parse (str/trim (slurp "./inputs/day3.txt"))))
+
+(comment (c/quick-bench (solve2 ins))
+
+; Evaluation count : 528 in 6 samples of 88 calls.
+;              Execution time mean : 1.181231 ms
+;     Execution time std-deviation : 36.333780 µs
+;    Execution time lower quantile : 1.145364 ms ( 2.5%)
+;    Execution time upper quantile : 1.228786 ms (97.5%)
+;                    Overhead used : 1.655558 ns
+         )
