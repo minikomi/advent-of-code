@@ -1,0 +1,5 @@
+{:deps  {org.clojure/clojure {:mvn/version "1.10.3"}}
+ :paths [:clj-paths :resource-paths]
+ :aliases
+ {:clj-paths ["src"]
+  :resource-paths ["resources"]}}
