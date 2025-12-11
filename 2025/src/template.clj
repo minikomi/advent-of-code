@@ -1,6 +1,7 @@
 (ns day
   (:require
    [clojure.string :as str]
+   [dom-top.core :refer [loopr]]
    [instaparse.core :as insta]))
 
 (def input1 "")
